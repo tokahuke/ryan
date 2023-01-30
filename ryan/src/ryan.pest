@@ -22,8 +22,8 @@ unsigned = @{
     identifierStr = @{ (ASCII_ALPHA | "_") ~ ( ASCII_ALPHANUMERIC | "_")* }
     reserved = @{
         ("_" | "true" | "false" | "and" | "or" | "not" | "if" | "then" | "else" | "let"
-        | "for" | "int" | "in" | "null" | "import" | "as" | "text" | "type" | "float" 
-        | "number" | "any") ~ !( ASCII_ALPHANUMERIC | "_")
+        | "for" | "int" | "in" | "null" | "import" | "as" | "text" | "type" | "bool" 
+        | "float" | "number" | "any") ~ !( ASCII_ALPHANUMERIC | "_")
     }
 
 // Expressions:

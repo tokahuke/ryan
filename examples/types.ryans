@@ -32,13 +32,13 @@ let x: Y = [1,2,3];
 x
 ---
 let x: Z = [1,2,3];
-type Z = (int, int, number);
+type Z = [int, int, number];
 ---
 let y idx =
     let x: Z = [1,2,3];
     x[idx];
 
-type Z = (int, int, number);
+type Z = [int, int, number];
 y 1
 ---
 let { x: null } = { "x": 1 };

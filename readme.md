@@ -28,7 +28,7 @@ default.
 ## Resources for Ryan
 
 * The Book of Ryan _(comming soon)_.
-* Syntax highlighting for VSCode _(comming soon)_.
+* [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
 * Run Ryan in your browser (thanks to the magic of WASM) _(comming soon)_.
 
 ## Isn't this similar to X?
