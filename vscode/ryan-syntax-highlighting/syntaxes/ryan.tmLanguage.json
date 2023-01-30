@@ -1,0 +1,83 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Ryan",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#types"
+		},
+		{
+			"include": "#operators"
+		},
+		{
+			"include": "#constants"
+		},
+		{
+			"include": "#identifiers"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#numbers"
+		}
+	],
+	"repository": {
+		"comments": {
+			"begin": "//",
+			"end": "\\n",
+			"name": "comment.line.double-slash.ryan"
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.ryan",
+				"match": "\\b(if|then|else|let|type|for|in|import|as\\stext)\\b"
+			}]
+		},
+		"types": {
+			"patterns": [{
+				"name": "entity.name.type.ryan",
+				"match": "\\b(bool|int|float|number|text)\\b"
+			}]
+		},
+		"constants": {
+			"patterns": [{
+				"name": "entity.name.tag",
+				"match": "\\b(null|true|false)\\b"
+			}]
+		},
+		"operators": {
+			"patterns": [{
+				"name": "keyword.other",
+				"match": "\\b(and|or|not)\\b"
+			}]
+		},
+		"identifiers": {
+			"patterns": [{
+				"name": "variable.name.ryan",
+				"match": "\\b([A-Za-z_][A-Za-z0-9_]*)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.ryan",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.ryan",
+					"match": "\\\\."
+				}
+			]
+		},
+		"numbers": {
+			"name": "constant.numeric",
+			"match": "\\b([+-]?[0-9]+\\.?[0-9]*e?[+-]?[0-9]*)\\b"
+		}
+	},
+	"scopeName": "source.ryan"
+}
