@@ -339,13 +339,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "ryan"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1713adf949ecd9d54bcd96310b13d9b3e6aacbea7809fa5272c781efcda4db6"
+dependencies = [
+ "lazy_static",
+ "pest",
+ "pest_derive",
+ "serde",
+ "serde_json",
+ "snailquote",
+ "thiserror",
+]
+
+[[package]]
 name = "ryan-cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "atty",
  "clap",
- "ryan",
+ "ryan 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json",
  "termcolor",
  "termcolor-json",

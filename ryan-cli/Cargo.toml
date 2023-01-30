@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 description = "Ryan: a configuration language for the practical programmer"
-readme = "readme.md"
+readme = "../readme.md"
 repository = "https://github.com/tokahuke/ryan"
 license = "MIT"
 keywords = ["cli", "parser", "json", "serde", "serialization"]
@@ -20,7 +20,7 @@ doc = false
 anyhow = "1.0.68"
 atty = "0.2.14"
 clap = { version = "4.1.4", features = ["derive"] }
-ryan = { path = "../ryan" }
+ryan = "0.1.0"
 serde_json = "1.0.91"
 termcolor = "1.2.0"
 termcolor-json = "1.0.0"
