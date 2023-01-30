@@ -1,0 +1,21 @@
+import "importee.ryan"
+---
+let Switch [a, b] = [b, a];
+let to_switch = import "importee.ryan";
+Switch to_switch
+---
+import "importee.ryan" as text
+---
+import "./importee.ryan" as text
+---
+import "../examples/importee.ryan" as text
+---
+import "env:USER" as text
+---
+import "env:RUST_BACKTRACE"
+---
+import "env:FOO"
+---
+import "env:FOO" or "no foo!"
+---
+import "env:FOO" as text or "no foo!"

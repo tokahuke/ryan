@@ -1,0 +1,67 @@
+type x = int;
+---
+type x = number;
+---
+type x = ?number;
+---
+type x = ?number | text;
+---
+type x = [?text];
+---
+type x = {int}
+---
+type x = { a: int, b: text };
+---
+type x = { a: int, b: text, .. };
+---
+type x = { a: int, b: text, .. };
+type xDict = {x};
+xDict
+---
+let x: int = 1;
+x
+---
+let x: text = 1;
+x
+---
+let x: number = 1.0;
+x
+---
+type Y = [int];
+let x: Y = [1,2,3];
+x
+---
+let x: Z = [1,2,3];
+type Z = (int, int, number);
+---
+let y idx =
+    let x: Z = [1,2,3];
+    x[idx];
+
+type Z = (int, int, number);
+y 1
+---
+let { x: null } = { "x": 1 };
+x
+---
+let { x: y } = { "x": 1 };
+y
+---
+let { x: y } = { "x": 1 };
+y
+---
+type y = int;
+let { x: y } = { "x": 1 };
+x
+---
+type y = int;
+let { "x": y } = { "x": 1 };
+x
+---
+//let int = 1;
+//let float = 1.0;
+//let text = "abc";
+---
+type Z = [int];
+let { x: Z } = { x: [1,2,3] };
+x

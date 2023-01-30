@@ -1,0 +1,158 @@
+WHITESPACE = _{ " " | "\n" | "\t" }
+COMMENT = _{ "//" ~ (!"\n" ~ ANY)* ~ "\n" }
+root = _{ SOI ~ main ~ EOI }
+
+main = _{ block? }
+
+// Literals:
+literal = { null | number | bool | text | identifier }
+unsigned = @{
+    '0'..'9'+ ~ ("." ~ '0'..'9'*)?
+    ~ ("e" ~ ("+" | "-")? ~ '0'..'9'+ )? 
+}
+    null = @{ "null" }
+    sign = @{ "+" | "-" }
+    number = @{ sign? ~ unsigned }
+    bool = @{ "true" | "false" }
+    escaped = @{ !"\"" ~ ("\\\"" | ANY)}
+    text = @{ "\"" ~ escaped* ~ "\"" }
+    identifier = @{
+        !reserved ~ identifierStr
+    }
+    identifierStr = @{ (ASCII_ALPHA | "_") ~ ( ASCII_ALPHANUMERIC | "_")* }
+    reserved = @{
+        ("_" | "true" | "false" | "and" | "or" | "not" | "if" | "then" | "else" | "let"
+        | "for" | "int" | "in" | "null" | "import" | "as" | "text" | "type" | "float" 
+        | "number" | "any") ~ !( ASCII_ALPHANUMERIC | "_")
+    }
+
+// Expressions:
+expression = { prefixOp* ~ term ~ postfixOp* ~ (binaryOp ~ prefixOp* ~ term ~ postfixOp*)* }
+binaryOp = _{
+    orOp | andOp | equalsOp | notEqualsOp | typeMatchesOp | greaterEqualOp | greaterOp 
+    | lesserEqualOp | lesserOp | lesserEqualOp | plusOp | minusOp | timesOp | dividedOp 
+    | remainderOp | defaultOp | juxtapositionOp 
+}
+	orOp = { "or" }
+    andOp = { "and" } 
+    equalsOp = { "==" }
+    notEqualsOp = { "!=" }
+    typeMatchesOp = { ":" }
+    greaterOp = { ">" }
+    greaterEqualOp = { ">=" }
+    lesserOp = { "<" }
+    lesserEqualOp = { "<=" }
+    plusOp = { "+" }
+    minusOp = { "-" }
+    timesOp = { "*" }
+    dividedOp = { "/" }
+    remainderOp = { "%" }
+    defaultOp = { "?" }
+    juxtapositionOp = { "" }
+prefixOp = _{ notOp }
+    notOp = { "not" }
+postfixOp = _{ accessOp }
+    accessOp = { "." ~ identifier }
+    pathOp = { "[" ~ (
+        expression ~ ("," ~ expression )* ~ ","?
+    ) ~ "]" }
+
+term = _{
+    list
+    | listComprehension
+    | dict 
+    | conditional
+    | literal
+    | import
+    | "(" ~ expression ~ ")"
+}
+    list = { "[" ~ (
+        expression ~ ("," ~ expression )* ~ ","?
+    )? ~ "]" }
+    dictItem = { (text | identifier) ~ ":" ~ expression ~ ifGuard? }
+    dict = { "{" ~ (
+        dictItem ~ ("," ~ dictItem)* ~ ","?
+    )? ~ "}" }
+    conditional = { "if" ~ expression ~ "then" ~ expression ~ "else" ~ expression }
+
+
+// Comprehensions:
+listComprehension = { "[" ~ expression ~ (forClause)+ ~ ifGuard? ~ "]" }
+    forClause = { "for" ~ pattern ~ "in" ~ expression }
+    ifGuard = { "if" ~ expression }
+
+
+// Patterns:
+pattern = {
+    wildcard
+	| matchIdentifier
+    | literal // any literal not an identifier...
+    | matchList
+    | matchHead
+    | matchTail
+    | matchDict
+    | matchDictStrict
+}
+    wildcard = { "_" }
+    matchIdentifier = { identifier ~ (":" ~ typeExpression)?}
+    matchList = { "[" ~ (
+        pattern ~ ("," ~ pattern )* ~ ","?
+    )? ~ "]" }
+    matchHead = { "[" ~ (pattern ~ ",")* ~ ".." ~ "]" }
+    matchTail = { "[" ~ ".." ~ ("," ~ pattern)* ~ "]" }
+    matchDict = { "{" ~ (
+        matchDictItem ~ ("," ~ matchDictItem)* ~ "," ~ ".."
+    )? ~ "}" }
+    matchDictStrict = { "{" ~ (
+        matchDictItem ~ ("," ~ matchDictItem)* ~ ","?
+    )? ~ "}" }
+    matchDictItem = {
+        text ~ ":" ~ pattern
+        | identifier ~ ":" ~ !matchIdentifier ~ pattern
+        | matchIdentifier
+    }
+
+
+// Bindings:
+binding = { destructuringBiding | patternMatchBinding | typeDefinition }
+    patternMatchBinding = { "let" ~ identifier ~ pattern ~ "=" ~ block  }
+    destructuringBiding = { "let" ~ pattern ~ "=" ~ block }
+    typeDefinition = { "type" ~ identifier ~ "=" ~ typeExpression }
+block = {
+    (binding ~ ";")* ~ expression
+    | binding ~ (";" ~ binding )* ~ ";"?
+}
+
+
+// Import statements:
+import = { "import" ~ text ~ ("as" ~ importFormat)? ~ ("or" ~ expression)? }
+importFormat = _{ importFormatText }
+    importFormatText = { "text" }
+
+
+// Types:
+primitive = { "any" | "null" | "bool" | "int" | "float" | "number" | "text" }
+typeExpression = { typeTerm ~ ("|" ~ typeTerm)*}
+typeTerm = _{ 
+    optionalType
+    | listType
+    | tupleType
+    | recordType
+    | strictRecordType
+    | dictionaryType
+    | primitive
+    | identifier
+}
+    optionalType = { "?" ~ typeExpression }
+    listType = { "[" ~ typeExpression ~  "]" }
+    dictionaryType = { "{" ~ typeExpression ~  "}" }
+    tupleType = {"(" ~ (
+        typeExpression ~ ("," ~ typeExpression )* ~ ","?
+    )? ~ ")"}
+    recordType = { "{" ~ (
+        typeItem ~ ("," ~ typeItem )* ~ ","?
+    )? ~ ".." ~ "}" }
+    strictRecordType = { "{" ~ (
+        typeItem ~ ("," ~ typeItem )* ~ ","?
+    )? ~ "}" }
+        typeItem = { (identifier | text) ~ ":" ~ typeExpression }

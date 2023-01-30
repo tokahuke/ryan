@@ -1,0 +1,26 @@
+{
+  "build_spec": {
+    "n_models": 4,
+    "ppca_mix_iters": 20,
+    "raw_data": {
+      "filename": "data/last-deal-scores.parquet",
+      "type": "FsLoader"
+    },
+    "state_size": 8
+  },
+  "loader_spec": {
+    "data_loader": {
+      "bucket": "fh-ca-data",
+      "key": "price-analytics-service/dev/server-data.bincode.gz",
+      "region": "eu-west-1",
+      "tempfile": "data/tmp/server-data.bincode.gz",
+      "type": "S3Loader"
+    },
+    "load_on_init": true,
+    "refresh_interval": "8 hours",
+    "retry_interval": "10 seconds"
+  },
+  "server_spec": {
+    "address": "0.0.0.0:8080"
+  }
+}

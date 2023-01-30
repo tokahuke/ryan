@@ -1,0 +1,21 @@
+"abc" + str 1
+---
+"abc" + str "abc"
+---
+"abc" + str [1,2,3]
+---
+"abc" + str {a: 1, b: 2}
+---
+len [1,2,3]
+---
+len "abc"
+---
+len { a: 1, b: 2 }
+---
+len 1
+---
+len
+---
+str len
+---
+range[1, null]

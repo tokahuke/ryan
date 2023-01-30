@@ -1,0 +1,137 @@
+true
+---
+false
+---
+1
+---
+12
+---
+1.1
+---
+1.1e2
+---
+11e2
+---
+11e-2
+---
+11e+2
+---
++1
+---
++12
+---
++1.1
+---
++1.1e2
+---
++11e2
+---
++11e-2
+---
++11e+2
+---
+-1
+---
+-12
+---
+-1.1
+---
+-1.1e2
+---
+-11e2
+---
+-11e-2
+---
+-11e+2
+---
+"tex\"t"
+---
+"å˙√∂åˆ¨ß∂ø¡™º£¶ª˙ø¨∆¬˜˚åß∂
+ºåªß∂åˆ´πˆ˜
+åπˆ˙∂ºªß˙∂ºªå˙∂º
+"
+---
+"teeeeeeeee
+xxxxxxt"
+---
+// this is a comment
+true
+---
+// this is a comment
+false
+---
+// this is a comment
+1
+---
+// this is a comment
+12
+---
+// this is a comment
+1.1
+---
+// this is a comment
+1.1e2
+---
+// this is a comment
+11e2
+---
+// this is a comment
+11e-2
+---
+// this is a comment
+11e+2
+---
+// this is a comment
++1
+---
+// this is a comment
++12
+---
+// this is a comment
++1.1
+---
+// this is a comment
++1.1e2
+---
+// this is a comment
++11e2
+---
+// this is a comment
++11e-2
+---
+// this is a comment
++11e+2
+---
+// this is a comment
+-1
+---
+// this is a comment
+-12
+---
+// this is a comment
+-1.1
+---
+// this is a comment
+-1.1e2
+---
+// this is a comment
+-11e2
+---
+// this is a comment
+-11e-2
+---
+// this is a comment
+-11e+2
+---
+// this is a comment
+"tex\"t"
+---
+// this is a comment
+"teeeeeeeee
+xxxxxxt"
+---
+// this is a comment
+"å˙√∂åˆ¨ß∂ø¡™º£¶ª˙ø¨∆¬˜˚åß∂
+ºåªß∂åˆ´πˆ˜
+åπˆ˙∂ºªß˙∂ºªå˙∂º
+"
