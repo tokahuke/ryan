@@ -35,14 +35,24 @@ jobs:
         command: build
         args: --release --target ${{ matrix.target }}
     
+    - name: Set exec extension for windows
+      shell: bash
+      run: |
+        echo "EXTENSION=.exe" >> $GITHUB_ENV
+      if: ${{ matrix.target == "x86_64-pc-windows-gnu" }} 
+
+    - name: Set exec extension for Linux
+      shell: bash
+      run: |
+        echo "EXTENSION=" >> $GITHUB_ENV
+      if: ${{ matrix.target == "x86_64-pc-windows-gnu" }} 
+
+
     - name: Package
       shell: bash
       run: |
-        export EXTENSION=$(
-          [[ "${{ matrix.target }}" == "x86_64-pc-windows-gnu" ]] && echo ".exe" || echo ""
-        )
         cd target/${{ matrix.target }}/release          
-        cp ryan$EXTENSION ../../../ryan@${{ matrix.target }}$EXTENSION
+        cp ryan${{ env.EXTENSION }} ../../../ryan@${{ matrix.target }}${{ env.EXTENSION }}
         cd -
     
     - name: Publish
@@ -51,5 +61,5 @@ jobs:
         files: 'ryan@*'
       env:
         GHR_COMPRESS: zip
-        GHR_PATH: ryan@${{ matrix.target }}$EXTENSION
+        GHR_PATH: ryan@${{ matrix.target }}${{ env.EXTENSION }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
