@@ -1,0 +1,23 @@
+[package]
+name = "ryan-python"
+version = "0.1.0"
+edition = "2021"
+authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
+description = "Ryan: a configuration language for the practical programmer"
+readme = "readme.md"
+repository = "https://github.com/tokahuke/ryan"
+license = "MIT"
+keywords = ["cli", "parser", "json", "serde", "serialization"]
+
+[package.metadata.maturin]
+python-source = "python"
+
+[lib]
+name = "ryan"
+crate-type = ["staticlib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pyo3 = { version = "0.18.0", features = ["extension-module"] }
+ryan = "0.1.0"

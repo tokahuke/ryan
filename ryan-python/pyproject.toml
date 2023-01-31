@@ -1,0 +1,26 @@
+[build-system]
+requires = ["maturin>=0.13,<0.14"]
+build-backend = "maturin"
+
+[project]
+name = "ryan-lang"
+version = "0.1.0"
+requires-python = ">=3.7"
+description = "Ryan: a configuration language for the practical programmer"
+readme = "readme.md"
+classifiers = [
+    "Programming Language :: Rust",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = ["cffi"]
+
+[[project.authors]]
+"name" = "Pedro B. Arruda"
+"email" = "pedrobittencourt3@gmail.com"
+
+[project.urls]
+"Homepage" = "https://github.com/tokahuke/ryan"
+
+[tool.maturin]
+python-source = "python"
+include = ["license", "readme.md"]
