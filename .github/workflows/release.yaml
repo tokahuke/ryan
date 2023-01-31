@@ -14,7 +14,6 @@ jobs:
         target: 
         - aarch64-apple-darwin
         - x86_64-unknown-linux-musl
-        - x86_64-pc-windows-gnu
     steps:
     
     - name: Checkout repository
@@ -45,8 +44,7 @@ jobs:
     
     - name: Publish
       uses: softprops/action-gh-release@v1
-      # TODO: if any of the build step fails, the release should be deleted.
       with:
-          files: 'ryan-@'
+          files: 'ryan@'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
