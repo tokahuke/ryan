@@ -18,4 +18,4 @@ jobs:
       - name: Build wheels wiht Docker
         run: |
           cd ryan-python
-          make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish-all 
+          make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
