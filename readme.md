@@ -18,6 +18,7 @@ You can run Ryan by installing the CLI:
 cargo install ryan-cli
 ```
 > SOON! Coming to a package manager near you...
+
 If you are developing in Rust, you can easily use Ryan directly in your code by running
 ```bash
 cargo install ryan
