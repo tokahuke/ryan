@@ -15,6 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Checkout GitHub Pages repo
+        uses: actions/checkout@v2
+        with:
+          repository: tokahuke/tokahuke.github.io
+      
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
         with:
@@ -22,8 +27,11 @@ jobs:
 
       - name: MdBook build
         run: |
-          cd book-of-ryan
+          cd /home/runner/work/ryan/book-of-ryan
           mdbook build
+          cd /home/runner/work/tokahuke.github.io
+          cp -r /home/runner/work/ryan/book-of-ryan/book \
+            /home/runner/work/tokahuke.github.io/book-of-ryan/book
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -31,14 +39,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./book-of-ryan/book
-
-      - name: Push to pages
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          source-directory: .
-          destination-github-username: tokahuke
-          destination-repository-name: tokahuke.github.io
-          target-branch: gh-pages
-          target-directory: ryan
+          output-dir: ./book-of-ryan
