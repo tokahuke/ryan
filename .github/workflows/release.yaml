@@ -43,7 +43,7 @@ jobs:
         cd -
     
     - name: Publish
-        uses: fnkr/github-action-ghr@v1
+      uses: fnkr/github-action-ghr@v1
       with:
         files: 'ryan@*'
       env:
