@@ -38,8 +38,13 @@ jobs:
     - name: Package
       shell: bash
       run: |
+        export EXTENSION=$(
+          [[ "${{ matrix.target }}" == "x86_64-pc-windows-gnu" ]]
+            && echo ".exe" 
+            || echo ""
+        )
         cd target/${{ matrix.target }}/release          
-        cp ryan ../../../ryan@${{ matrix.target }}
+        cp ryan$EXTENSION ../../../ryan@${{ matrix.target }}$EXTENSION
         cd -
     
     - name: Publish
