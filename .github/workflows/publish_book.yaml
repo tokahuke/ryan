@@ -31,9 +31,9 @@ jobs:
           cd /home/runner/work
           git clone https://${{ secrets.GH_PAT }}@github.com/tokahuke/tokahuke.github.io.git
           cd tokahuke.github.io
-          mkdir -p ./static
+          mkdir -p ./static/book-of-ryan
           rm -rf ./static
-          mv /home/runner/work/book-of-ryan ./static/
+          mv /home/runner/work/book-of-ryan ./static/book-of-ryan
           git config --global user.email "noreply@users.github.io"
           git config --global user.name "Pedro B Arruda"
           git add static
