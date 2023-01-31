@@ -24,7 +24,7 @@ jobs:
         run: |
           cd book-of-ryan
           mdbook build
-          cp -r ./book /home/runner/work/book
+          cp -r ./book /home/runner/work/book-of-ryan
 
       - name: Copy artifacts into GitHub Pages repo
         run: |
@@ -32,7 +32,7 @@ jobs:
           git clone https://${{ secrets.GH_PAT }}@github.com/tokahuke/tokahuke.github.io.git
           cd tokahuke.github.io
           mkdir -p ./static/book-of-ryan
-          mv /home/runner/work/book ./static/book-of-ryan
+          mv /home/runner/work/book-of-ryan ./static/
           git config --global user.email "noreply@users.github.io"
           git config --global user.name "Pedro B Arruda"
           git add static
