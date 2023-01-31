@@ -7,6 +7,7 @@ on:
   
 jobs:
   release:
+    permissions: write-all
     name: Build release artifacts
     runs-on: ubuntu-latest
     strategy: 
@@ -37,14 +38,15 @@ jobs:
     - name: Package
       shell: bash
       run: |
-        #strip target/${{ matrix.target }}/release/ryan
         cd target/${{ matrix.target }}/release          
-        zip ../../../ryan@${{ matrix.target }}.zip ryan
+        cp ryan ../../../ryan@${{ matrix.target }}
         cd -
     
     - name: Publish
-      uses: softprops/action-gh-release@v1
+        uses: fnkr/github-action-ghr@v1
       with:
-          files: 'ryan@*'
+        files: 'ryan@*'
       env:
+        GHR_COMPRESS: zip
+        GHR_PATH: ryan@{{ matrix.target }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
