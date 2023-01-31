@@ -37,5 +37,5 @@ jobs:
           git config --global user.email "noreply@users.github.io"
           git config --global user.name "Pedro B Arruda"
           git add static
-          git commit -m 'pushing Book of Ryan to GitHub Pages'
+          git commit -m 'pushing Book of Ryan to GitHub Pages' || echo "it's ok to have nothing..."
           git push
