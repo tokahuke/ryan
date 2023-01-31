@@ -51,5 +51,5 @@ jobs:
         files: 'ryan@*'
       env:
         GHR_COMPRESS: zip
-        GHR_PATH: ryan@${{ matrix.target }}
+        GHR_PATH: ryan@${{ matrix.target }}$EXTENSION
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
