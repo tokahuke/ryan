@@ -31,3 +31,14 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./book-of-ryan/book
+
+      - name: Push to pages
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          source-directory: .
+          destination-github-username: tokahuke
+          destination-repository-name: tokahuke.github.io
+          target-branch: gh-pages
+          target-directory: ryan
