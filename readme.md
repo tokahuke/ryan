@@ -27,7 +27,7 @@ default.
 
 ## Resources for Ryan
 
-* The Book of Ryan _(comming soon)_.
+* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
 * [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
 * Run Ryan in your browser (thanks to the magic of WASM) _(comming soon)_.
 
