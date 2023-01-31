@@ -33,13 +33,8 @@ jobs:
       
       - name: Copy artifacts into GitHub Pages repo
         run: |
-          mkdir -p ./book-of-ryan/book
-          cp -r /home/runner/work/book ./book-of-ryan/book
-      
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./book-of-ryan/book
-          output-dir: ./book-of-ryan
+          mkdir -p ./static/book-of-ryan
+          cp -r /home/runner/work/book ./static/book-of-ryan
+          git add static
+          git commit -m 'pushing Book of Ryan to GitHub Pages'
+          git push
