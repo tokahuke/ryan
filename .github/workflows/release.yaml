@@ -36,12 +36,12 @@ jobs:
         args: --release --target ${{ matrix.target }}
     
     - name: Package
-        shell: bash
-        run: |
-          #strip target/${{ matrix.target }}/release/ryan
-          cd target/${{ matrix.target }}/release          
-          zip ../../../ryan@${{ matrix.target }}.zip ryan
-          cd -
+      shell: bash
+      run: |
+        #strip target/${{ matrix.target }}/release/ryan
+        cd target/${{ matrix.target }}/release          
+        zip ../../../ryan@${{ matrix.target }}.zip ryan
+        cd -
     
     - name: Publish
       uses: softprops/action-gh-release@v1
