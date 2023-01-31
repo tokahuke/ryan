@@ -15,11 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Checkout GitHub Pages repo
-        uses: actions/checkout@v2
-        with:
-          repository: tokahuke/tokahuke.github.io
-      
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
         with:
@@ -27,12 +22,20 @@ jobs:
 
       - name: MdBook build
         run: |
-          cd /home/runner/work/ryan/book-of-ryan
+          cd book-of-ryan
           mdbook build
-          cd /home/runner/work/tokahuke.github.io
-          cp -r /home/runner/work/ryan/book-of-ryan/book \
-            /home/runner/work/tokahuke.github.io/book-of-ryan/book
+          cp -r ./book /home/runner/work/book
 
+      - name: Checkout GitHub Pages repo
+        uses: actions/checkout@v2
+        with:
+          repository: tokahuke/tokahuke.github.io
+      
+      - name: Copy artifacts into GitHub Pages repo
+        run: |
+          mkdir -p ./book-of-ryan/book
+          cp -r /home/runner/work/book ./book-of-ryan/book
+      
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/main' }}
