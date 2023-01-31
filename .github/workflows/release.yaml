@@ -47,7 +47,6 @@ jobs:
         echo "EXTENSION=" >> $GITHUB_ENV
       if: ${{ matrix.target == 'xx86_64-unknown-linux-musl' }} 
 
-
     - name: Package
       shell: bash
       run: |
