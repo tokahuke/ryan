@@ -21,13 +21,15 @@ const value = fromStr(`
 
 ## Differences from other Ryan implementations
 
-WASM is a _much_ more hermetic enviroment than other arhcitectures. In WASM, we cannot be trust on the existence of
-a filesystem or of environment variables, things that the standard Ryan loader depends
-on. Therefore, a different approach to module loading is needed.
+WASM is a _much_ more hermetic enviroment than other arhcitectures. In WASM, we cannot
+rely on the existence of a filesystem or of environment variables, things that the
+standard Ryan loader depends on. Therefore, a different approach to module loading is
+needed.
 
 This implementation uses the properties of a given JS object to implement a
 module resolution tree (a tree of nested dictionaries, where the leaves are stringss),
-a poorman's filesystem of sorts. An example of how to set up a module system is shown below:
+a poorman's filesystem of sorts. An example of how to set up a module system is shown
+below:
 
 ```javascript
 import { Environment, JsLoader, fromStrWithEnv } from "ryan"
@@ -74,10 +76,13 @@ Additionally, the Ryan CLI might be useful to have for testing and debugging. Se
 * [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
 * [The Rust docs](https://docs.rs/ryan) also have good info, even if you don't care about Rust.
 * [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
-* Run Ryan in your browser (thanks to the magic of WASM) _(comming soon)_.
 
 ## Limitations of this library
 
-By now, only deserializing is supported. In the future, this wrapper might also get the
-full environment API exposed. If you have an usecase for that, please don't hesitate and
-open an issue in the Ryan repository.
+As stated above, WASM works in a more constrained manner than other architectures. This
+has led to constraints on how Ryan operates in the browser when it comes to the import
+system. See the example above for a detailed explanation.
+
+Also, some of the features present in the Rust implementation are not yet exposed. If you
+do have a need for any additional feature to be exposed, please file an issue in the
+official Ryan repository.
