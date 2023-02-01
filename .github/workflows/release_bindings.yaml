@@ -1,0 +1,41 @@
+name: Publish Bindings to different programming languages
+
+on:
+  push:
+    # tags:
+    #   - "bindings-v*"
+    branches:
+      - main
+
+jobs:
+  # python:
+  #   runs-on: ubuntu-latest
+  #   permissions: write-all
+  #   concurrency:
+  #     group: ${{ github.workflow }}-${{ github.ref }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Build wheels with Docker
+  #       run: |
+  #         cd ryan-python
+  #         make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
+  js/wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+        target: wasm32-unknown-unknown
+  
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      
+      - name: Build JS bindings with Wasm Pack
+        run: |
+          echo "hello, world!" 

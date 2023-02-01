@@ -30,7 +30,8 @@ default.
 
 * [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
 * [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
-* Run Ryan in your browser (thanks to the magic of WASM) _(comming soon)_.
+* [Run Ryan in your browser](https://github.com/tokahuke/ryan/tree/main/ryan-js)
+(thanks to the magic of WASM) _(comming soon)_.
 
 ## Isn't this similar to X?
 
