@@ -22,15 +22,18 @@ curl -L -Ssf "https://raw.githubusercontent.com/tokahuke/ryan/main/install/$(una
 ```
 You will need `sudo` rights to run the script (this installation is system-wide).
 
+### Windows
+
+Go to the [Ryan repository](https://github.com/tokahuke/ryan/releases/latest) and download the zipped file corresponding to Windows. Unzip it and move it to somewhere nice! Or...
+
 ### Using `cargo`
 
-You can run Ryan by installing the CLI from [crates.io](http://crates.io/crate/ryan-cli)
+You can run Ryan by installing the CLI from [crates.io](http://crates.io/crates/ryan-cli)
 ```bash
 cargo install ryan-cli
 ```
 
 ### Integrate into your app!
-
 
 Depending on your language, you can install a binding to Ryan from your standard package manager:
 ```bash
