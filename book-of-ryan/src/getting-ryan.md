@@ -13,8 +13,10 @@ Depending on your usecase, you might need to install one of the above. Probably 
 
 Copy and paste the following command in your favorite console:
 ```sh
-curl -L -Ssf "https://raw.githubusercontent.com/tokahuke/ryan/main/install/$(uname).sh" | sudo sh
+curl -L -Ssf "https://raw.githubusercontent.com/tokahuke/ryan/main/install/$(uname).sh" \
+    | sudo sh
 ```
+You will need `sudo` rights to run the script (this installation is system-wide).
 
 ### Download the binary from GitHub (Linux, MacOS, Windows)
 

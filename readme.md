@@ -13,18 +13,31 @@ maintanable.
 
 ## How to use Ryan
 
-You can run Ryan by installing the CLI:
+### One-liner (Linux, MacOS)
+
+Copy and paste the following command in your favorite console:
+```bash
+curl -L -Ssf "https://raw.githubusercontent.com/tokahuke/ryan/main/install/$(uname).sh" \
+    | sudo sh
+```
+You will need `sudo` rights to run the script (this installation is system-wide).
+
+### Using `cargo`
+
+You can run Ryan by installing the CLI from [crates.io](http://crates.io/crate/ryan-cli)
 ```bash
 cargo install ryan-cli
 ```
-> SOON! Coming to a package manager near you...
 
-If you are developing in Rust, you can easily use Ryan directly in your code by running
+### Integrate into your app!
+
+
+Depending on your language, you can install a binding to Ryan from your standard package manager:
 ```bash
-cargo install ryan
+cargo install ryan      # Rust
+pip install ryan-lang   # Python
+npm install ryan-js     # JavaScript (web)
 ```
-The basic API is purposefully similar to that of `serde_json` and `serde` is supported by
-default.
 
 ## Resources for Ryan
 
