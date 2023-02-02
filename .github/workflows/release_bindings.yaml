@@ -19,7 +19,7 @@ jobs:
   #       run: |
   #         cd ryan-python
   #         make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
-  js/wasm:
+  js-wasm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
