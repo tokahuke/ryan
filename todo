@@ -2,7 +2,15 @@
 - Find which package managers to use for the CLI.
 - Python and JS bindings, for starters.
 - Publish Python and JS bindings.
+
+
+--- v0.2.0
+
 - Predicate types.
 - Dynamic keys in dicts.
 - Dict comprehension.
-- Cli.
+- Split mode.
+- More builtins.
+- Import CSV.
+- Suport for more output formats.
+- `value_from` functions.

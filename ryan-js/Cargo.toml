@@ -1,8 +1,12 @@
 [package]
 name = "ryan-js"
 version = "0.1.0"
-authors = ["Pedro Arruda <pedrobittencourt3@gmail.com>"]
-edition = "2018"
+authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
+edition = "2021"
+readme = "Readme.md"
+description = "Ryan: a configuration language for the practical programmer"
+repository = "https://github.com/tokahuke/ryan"
+license = "MIT"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

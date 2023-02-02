@@ -10,6 +10,7 @@
 - [Hello... Jason!?](./art-of-ryan/hello-json.md)
 - [Simple types](./art-of-ryan/simple-types.md)
 - [Variables](./art-of-ryan/variables-and-patterns.md)
+- [Not-so-simple types](./art-of-ryan/not-so-simple-types.md)
 - [Importing things](./art-of-ryan/importing.md)
 - [Pattern matching](./art-of-ryan/pattern-matching.md)
 - [Comprehensions](./art-of-ryan/comprehensions.md)
