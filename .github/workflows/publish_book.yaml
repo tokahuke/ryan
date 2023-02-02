@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - book-of-ryan/*
+    # paths:
+    #   - book-of-ryan/*
   pull_request:
 
 jobs:
