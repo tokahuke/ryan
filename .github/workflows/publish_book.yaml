@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - book-of-ryan
+      - book-of-ryan/*
   pull_request:
 
 jobs:
