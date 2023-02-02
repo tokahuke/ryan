@@ -13,7 +13,7 @@ Depending on your usecase, you might need to install one of the above. Probably 
 
 Copy and paste the following command in your favorite console:
 ```sh
-curl -L -Ssf "https://github.com/tokahuke/ryan/tree/main/install/$(uname).sh" | sudo sh
+curl -L -Ssf "https://raw.githubusercontent.com/tokahuke/ryan/main/install/$(uname).sh" | sudo sh
 ```
 
 ### Download the binary from GitHub (Linux, MacOS, Windows)
