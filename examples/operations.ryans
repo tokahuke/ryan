@@ -35,10 +35,10 @@ let Foo [] = 1;
 Foo
 ---
 let x = { a: [1,2,3] };
-x["a", 1]
+x ["a", 1]
 ---
 let x = { a: [1,2,3] };
-x["a", 1, "oops"]
+x ["a", 1, "oops"]
 ---
 let x = { a: 1 };
 x.a

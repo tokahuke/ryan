@@ -1,5 +1,4 @@
 - Book of Ryan.
-- Find which package managers to use for the CLI.
 - Python and JS bindings, for starters.
 - Publish Python and JS bindings.
 
@@ -7,9 +6,9 @@
 
 - Dict comprehension.
 - More built-ins.
+- Make operations short-circuiting.
 
-
---- v0.2.0
+--- v0.2.0 and beyond
 
 - Predicate types.
 - Dynamic keys in dicts.
@@ -17,3 +16,6 @@
 - Import CSV.
 - Support for more output formats.
 - `value_from` functions.
+- multiple loops in comprehensions.
+- Better error messages.
+- Resource limiting.
