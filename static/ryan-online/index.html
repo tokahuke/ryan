@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Try Ryan online</title>
+        <script src="./main.js"></script>
+        <style>
+            #editors {
+                display: flex;
+            }
+            #editor-area {
+                height: 90vh;
+                width: 600px;
+            }
+            #display-area {
+                height: 90vh;
+                width: 600px;
+            }
+
+            body {
+                color: #f8f8f2;
+                background-color: #131411;
+                padding: 0em 1em;
+            }
+
+            h1 {
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+                font-style: italic;
+            }
+            
+            h1 #try {
+                color: #65d6ec;
+            }
+            h1 #ryan {
+                color: #f92672;
+                font-style: normal;
+            }
+            h1 #online {
+                font-weight: bold;
+                font-style: italic;
+                text-decoration: underline;
+            }
+            h1 #bang {
+                font-style: italic;
+                text-decoration: underline;
+            }
+            h1 .braces {
+                font-style: normal;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>
+            <span id=try>try</span>
+            <span class="braces">{</span>
+            <span id="ryan">Ryan</span>
+            <span id="online"> online<span id="bang">!</span></span>
+            <span class="braces">}</span>
+        </h1>
+        <div id="editors">
+        <div id="editor-area">// This is some sample Ryan code
+// Edit at will!
+
+let number_of_lights = 4;
+
+{
+    picard: number_of_lights,
+    gul_madred: number_of_lights + 1,
+}</div>
+    <div id="display-area"></div>
+    </div>
+    </body>
+</html>
