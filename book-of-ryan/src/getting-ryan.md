@@ -5,7 +5,7 @@ There are plenty of different ways to get Ryan. It really depends on what your s
 1. The Ryan CLI: a program that you install in your computer. You pass a `.ryan` in and get `.json` out. 
 2. The Ryan library: a dependency you add to you project that takes a `.ryan` from somewhere and spits out data that your programming environment can understand.
 
-Depending on your usecase, you might need to install one of the above. Probably most people will want to install both.
+Depending on your use-case, you might need to install one of the above. Probably most people will want to install both.
 
 ## Getting the Ryan CLI
 

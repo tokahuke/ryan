@@ -128,7 +128,7 @@ impl ImportLoader for NoImport {
 
 /// The default importer for Ryan. This importer will read any file in the system, plus
 /// all environment variables, when the module starts with the `env:` prefix. There is
-/// the one added restriction that `env:` modules dont have access to load regular files.
+/// the one added restriction that `env:` modules don't have access to load regular files.
 /// This happens because the working directory for an environment variable is
 /// ill-defined.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -176,17 +176,17 @@ impl ImportLoader for DefaultImporter {
 #[derive(Error, Debug)]
 pub enum ImportError {
     /// A module tried to, directly or indirectly, import itself.
-    #[error("Circular import dectected at {0:?}")]
+    #[error("Circular import detected at {0:?}")]
     CircularImportDetected(Rc<str>),
     /// An environment variable module tried to access the filesystem.
     #[error("Cannot access the filesystem from the environment variable")]
     CannotAccessFileSystemFromEnv,
-    /// There is an overried for this module and it cannot be accessed.
+    /// There is an override for this module and it cannot be accessed.
     #[error("Cannot access the filesystem from the environment variable")]
     ImportPathIsOverridden(Rc<str>),
 }
 
-/// The internal state of the improt system.
+/// The internal state of the import system.
 #[derive(Debug)]
 pub(super) struct ImportState {
     pub(super) import_loader: Box<dyn ImportLoader>,
@@ -246,7 +246,7 @@ impl<L: ImportLoader> ImportLoader for Override<L> {
 
     fn load(&self, path: &str) -> Result<Box<dyn Read>, Box<dyn Error + 'static>> {
         match self.overrides.get(path) {
-            Some(Some(overriden)) => Ok(Box::new(Cursor::new(overriden.clone()))),
+            Some(Some(overridden)) => Ok(Box::new(Cursor::new(overridden.clone()))),
             Some(None) => Err(Box::new(ImportError::ImportPathIsOverridden(
                 rc_world::str_to_rc(path),
             ))),

@@ -1,3 +1,4 @@
+use std::cmp;
 use std::fmt::Display;
 use std::{collections::HashMap, rc::Rc};
 
@@ -15,7 +16,7 @@ use super::{Context, State};
 /// A pattern match rule introduced by a biding.
 #[derive(Debug, Clone, PartialEq)]
 pub struct PatternMatch {
-    /// The pattern agains which the input will be matched.
+    /// The pattern against which the input will be matched.
     pub pattern: Pattern,
     /// The block to be executes if the match is successful.
     pub block: Block,
@@ -25,7 +26,7 @@ pub struct PatternMatch {
 
 impl Display for PatternMatch {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        // TODO: make the synxax for this representation:
+        // TODO: make the syntax for this representation:
 
         // if let Some(id) = &self.identifier {
         //     write!(f, "@{id} ")?;
@@ -85,7 +86,7 @@ impl NativePatternMatch {
 /// An error raised when a [`Value`] has no counterpart in JSON, e.g., a type or a pattern
 /// match rule.
 #[derive(Debug, Error)]
-#[error("The follosing value is not JSON-serializable: {value}")]
+#[error("The following value is not JSON-serializable: {value}")]
 pub struct NotRepresentable {
     value: String,
 }
@@ -109,7 +110,7 @@ pub enum Value {
     Map(Rc<HashMap<Rc<str>, Value>>),
     /// A list of pattern match rules for a given identifier.
     PatternMatches(Rc<str>, Vec<Rc<PatternMatch>>),
-    /// A pattern match where the code to be executed in case of a match is navtive code,
+    /// A pattern match where the code to be executed in case of a match is native code,
     /// not a Ryan block.
     NativePatternMatch(Rc<NativePatternMatch>),
     /// A Ryan type.
@@ -135,15 +136,15 @@ impl Display for Value {
                 write!(f, "}}")?;
             }
             Self::PatternMatches(name, pattern_matches) => {
-                if pattern_matches.len() > 1 {
-                    write!(
-                        f,
-                        "![match {name} with {} alternatives]",
-                        pattern_matches.len()
-                    )?;
-                } else {
-                    write!(f, "![match {name} with 1 alternative]")?;
-                }
+                write!(
+                    f,
+                    "![pattern {name} {}]",
+                    pattern_matches
+                        .iter()
+                        .map(|p| p.to_string())
+                        .collect::<Vec<_>>()
+                        .join(" | ")
+                )?;
             }
             Self::NativePatternMatch(pattern_match) => {
                 write!(f, "{pattern_match}")?;
@@ -155,9 +156,31 @@ impl Display for Value {
     }
 }
 
+impl FromIterator<Value> for Value {
+    fn from_iter<T: IntoIterator<Item = Value>>(iter: T) -> Self {
+        let list = iter.into_iter().collect::<Vec<_>>();
+        Value::List(list.into())
+    }
+}
+
+impl PartialOrd for Value {
+    fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
+        let order = match (self, other) {
+            (Self::Null, Self::Null) => cmp::Ordering::Equal,
+            (Self::Bool(a), Self::Bool(b)) => a.cmp(b),
+            (Self::Integer(a), Self::Integer(b)) => a.cmp(b),
+            (Self::Float(a), Self::Float(b)) => a.partial_cmp(b)?,
+            (Self::Text(a), Self::Text(b)) => a.cmp(b),
+            _ => return None,
+        };
+
+        Some(order)
+    }
+}
+
 impl Value {
     /// Tests the "truthiness" of a value. Currently, only `true` is true; values other
-    /// than a boolen will raise an error.
+    /// than a boolean will raise an error.
     pub fn is_true(&self) -> Result<bool, String> {
         match self {
             Self::Bool(b) => Ok(*b),
@@ -165,7 +188,7 @@ impl Value {
         }
     }
 
-    /// "Equality" between a value and a [`Literal`]. Litterals are nodes in the abstract
+    /// "Equality" between a value and a [`Literal`]. Literals are nodes in the abstract
     /// syntax tree, while values are not.
     pub fn matches(&self, lit: &Literal) -> bool {
         match (self, lit) {
@@ -177,6 +200,7 @@ impl Value {
         }
     }
 
+    /// Does the indexing of a given value by another.
     fn extract_item(&self, item: &Value) -> Result<Value, String> {
         match (self, item) {
             (Value::Map(map), Value::Text(key)) => {
@@ -198,6 +222,15 @@ impl Value {
                 }
             }
             (val, item) => Err(format!("Cannot index {val} by {item}")),
+        }
+    }
+
+    /// Tries to return an iterator, if the value is iterable
+    pub fn iter(&self) -> Result<ValueIter, NotIterable> {
+        match self {
+            Self::List(list) => Ok(ValueIter::List(list.iter())),
+            Self::Map(dict) => Ok(ValueIter::Map(dict.iter())),
+            _ => Err(NotIterable { val: self.clone() }),
         }
     }
 
@@ -240,4 +273,31 @@ impl Value {
 
         Ok(json)
     }
+}
+
+/// An iterator over a [`Value`], only in the cases that makes sense.
+pub enum ValueIter<'a> {
+    /// Iterator over a [`Value::List`] value.
+    List(std::slice::Iter<'a, Value>),
+    /// Iterator over a [`Value::Map`] value.
+    Map(std::collections::hash_map::Iter<'a, Rc<str>, Value>),
+}
+
+impl<'a> Iterator for ValueIter<'a> {
+    type Item = Value;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            Self::List(it) => it.next().cloned(),
+            Self::Map(it) => it.next().map(|(key, value)| {
+                Value::List(vec![Value::Text(key.clone()), value.clone()].into())
+            }),
+        }
+    }
+}
+
+/// Error when the user tries to iterate over non-iterable values.
+#[derive(Debug, Error)]
+#[error("Value {val} is not iterable")]
+pub struct NotIterable {
+    val: Value,
 }

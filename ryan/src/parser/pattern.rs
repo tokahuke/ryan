@@ -46,10 +46,10 @@ pub enum Pattern {
     /// Expects a list of fixed size and proceeds to bind each of its elements to
     /// patterns. This is represented by, e.g., `[a, b, c]` in Ryan.
     MatchList(Vec<Pattern>),
-    /// Expects a list of at least a given size and proceeds to bind the begining of the 
+    /// Expects a list of at least a given size and proceeds to bind the beginning of the
     /// list to patterns. This is represented by, e.g., `[a, b, c, ..]` in Ryan.
     MatchHead(Vec<Pattern>),
-    /// Expects a list of at least a given size and proceeds to bind the end of the list 
+    /// Expects a list of at least a given size and proceeds to bind the end of the list
     /// to patterns. This is represented by, e.g., `[.., a, b, c]` in Ryan.
     MatchTail(Vec<Pattern>),
     /// Expects a dictionary with at least the provided keys and proceeds to bind each

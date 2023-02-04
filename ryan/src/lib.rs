@@ -12,7 +12,7 @@
 //! configuration file with everything in it? You leave the users to decide where the
 //! values are coming from, giving them a versatile interface while keeping things simple
 //! on your side. Ryan makes that bridge while keeping the user's code short and
-//! maintanable.
+//! maintainable.
 //!
 //! ## How to use Ryan in your program with this crate
 //!
@@ -22,7 +22,7 @@
 //! can be your one-stop-shop for everything Ryan related.
 //!
 //! However, if you are looking for ways to customize Ryan, the module [`environment::loader`]
-//! has the [`environment::ImportLoader`] trait (along with utilities) to confiure the
+//! has the [`environment::ImportLoader`] trait (along with utilities) to configure the
 //! import mechanism however you like. On the other hand, the module [`environment::native`]
 //! has the interfaces for native extensions. Finally, everything can be put together
 //! in an environment using the [`environment::EnvironmentBuilder`].
@@ -44,12 +44,12 @@
 //! program is guaranteed to finish executing (eventually).
 //! 3. **Immutability**: everything in Ryan is immutable. Once a value is declared, it
 //! stays that way for the remaining of its existence. Of course, you can _shadow_ a
-//! variable by redeclaring it with anouther value, but that will be a completely new
+//! variable by re-declaring it with another value, but that will be a completely new
 //! variable.
 //!
 //! Of course, one can reconfigure the import system to read from any arbitrary source of
 //! information and can also create _native extensions_ to throw all these guarantees out
-//! of the window. The possibilitities are infinte. However, these are the sane defaults
+//! of the window. The possibilities are infinite. However, these are the sane defaults
 //! that are offered out-of-the-box.
 //!
 //! # A primer on Ryan
@@ -61,20 +61,20 @@
 //!     "this": "works",
 //!     "that": ["is", "a", "list"],
 //!     "how_many_lights": 4,
-//!     "billion_dolar_mistake": null
+//!     "billion_dollar_mistake": null
 //! }
 //! ```
 //! However, JSON lacks many of the amenities we have grown so accustomed to:
 //! ```ryan
 //! // Comments...
 //! {
-//!     // Ommiting annoying quotes:
+//!     // Omitting annoying quotes:
 //!     this: "works",
 //!     // Forgiving commas:
 //!     that: ["is", "a", "list",],
 //!     // Basic maths
 //!     how_many_lights: 5 - 1,
-//!     billion_dolar_mistake: null,
+//!     billion_dollar_mistake: null,
 //! }
 //! ```
 //! Besides, since we are all about code reusability, defining variables is supported:
@@ -92,7 +92,7 @@
 //!     participants: ["Picard", "Dathon"],
 //!     legends: {
 //!         tanagra: "Darmok and Jalad",
-//!         tebma: "his arms wide",
+//!         temba: "his arms wide",
 //!         shaka: "when the walls fell",
 //!     },
 //! };
@@ -118,7 +118,7 @@
 //! let alien_entity = import "env:" + a_letter;    // <= parse error!
 //! ```
 //! Of course, there is some more to Ryan that this quick tour, but you already get the
-//! idea of the key components. To get the full picture, please referr to the book
+//! idea of the key components. To get the full picture, please refer to the book
 //! (under construction).
 //!
 

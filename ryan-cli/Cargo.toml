@@ -20,7 +20,8 @@ doc = false
 anyhow = "1.0.68"
 atty = "0.2.14"
 clap = { version = "4.1.4", features = ["derive"] }
-ryan = "0.1.0"
+# ryan = "0.1.0"
+ryan = { path = "../ryan" }
 serde_json = "1.0.91"
 termcolor = "1.2.0"
 termcolor-json = "1.0.0"

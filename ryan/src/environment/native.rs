@@ -1,4 +1,5 @@
 use std::{
+    cmp,
     collections::HashMap,
     error::Error,
     fmt::{self, Debug, Display},
@@ -7,7 +8,7 @@ use std::{
 use thiserror::Error;
 
 use crate::{
-    parser::{Pattern, Value},
+    parser::{NotIterable, Pattern, TypeExpression, Value},
     rc_world,
 };
 
@@ -25,7 +26,7 @@ pub struct NativePatternMatch {
 
 impl Display for NativePatternMatch {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "@{} {} => !?", self.identifier, self.pattern)
+        write!(f, "![native pattern {} {}]", self.identifier, self.pattern)
     }
 }
 
@@ -67,15 +68,15 @@ impl Display for BuiltinErrorMsg {
     }
 }
 
-fn build_builtins() -> HashMap<Rc<str>, Value> {
-    let mut builtins = HashMap::new();
+fn build_built_ins() -> HashMap<Rc<str>, Value> {
+    let mut built_ins = HashMap::new();
 
     fn t(s: &str) -> Rc<str> {
         rc_world::str_to_rc(s)
     }
 
     let mut insert = |pat: NativePatternMatch| {
-        builtins.insert(
+        built_ins.insert(
             pat.identifier.clone(),
             Value::NativePatternMatch(pat.into()),
         )
@@ -120,13 +121,439 @@ fn build_builtins() -> HashMap<Rc<str>, Value> {
             ))),
         },
     ));
+    insert(NativePatternMatch::new(
+        "zip",
+        Pattern::MatchList(vec![
+            Pattern::Identifier(t("left"), None),
+            Pattern::Identifier(t("right"), None),
+        ]),
+        move |value| {
+            let Value::List(list) = value else {
+                unreachable!()
+            };
+            let [left, right] = &*list else {
+                unreachable!()
+            };
 
-    builtins
+            let zipped: Value = left
+                .iter()?
+                .zip(right.iter()?)
+                .map(|(left, right)| Value::List(vec![left, right].into()))
+                .collect();
+
+            Ok(zipped) as Result<_, NotIterable>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "enumerate",
+        Pattern::Identifier(t("x"), None),
+        move |value| {
+            let enumerated: Value = value
+                .iter()?
+                .enumerate()
+                .map(|(i, val)| Value::List(vec![Value::Integer(i as i64), val].into()))
+                .collect();
+            Ok(enumerated) as Result<_, NotIterable>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "sum",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::List(Box::new(TypeExpression::Or(vec![
+                TypeExpression::Float,
+                TypeExpression::Integer,
+            ])))),
+        ),
+        move |value| {
+            let mut sum = Value::Integer(0);
+
+            for val in value.iter()? {
+                sum = match (val, sum) {
+                    (Value::Integer(val), Value::Integer(sum)) => Value::Integer(val + sum),
+                    (Value::Float(val), Value::Integer(sum)) => Value::Float(val + sum as f64),
+                    (Value::Integer(val), Value::Float(sum)) => Value::Float(val as f64 + sum),
+                    (Value::Float(val), Value::Float(sum)) => Value::Float(val + sum),
+                    _ => unreachable!(),
+                }
+            }
+
+            Ok(sum) as Result<_, NotIterable>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "max",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::List(Box::new(TypeExpression::Or(vec![
+                TypeExpression::Float,
+                TypeExpression::Integer,
+            ])))),
+        ),
+        move |value| {
+            let mut max = Value::Integer(0);
+
+            for val in value.iter()? {
+                max = match (val, max) {
+                    (Value::Integer(val), Value::Integer(max)) => {
+                        Value::Integer(i64::max(val, max))
+                    }
+                    (Value::Float(val), Value::Integer(max)) => {
+                        Value::Float(f64::max(val, max as f64))
+                    }
+                    (Value::Integer(val), Value::Float(max)) => {
+                        Value::Float(f64::max(val as f64, max))
+                    }
+                    (Value::Float(val), Value::Float(max)) => Value::Float(f64::max(val, max)),
+                    _ => unreachable!(),
+                }
+            }
+
+            Ok(max) as Result<_, NotIterable>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "min",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::List(Box::new(TypeExpression::Or(vec![
+                TypeExpression::Float,
+                TypeExpression::Integer,
+            ])))),
+        ),
+        move |value| {
+            let mut min = Value::Integer(0);
+
+            for val in value.iter()? {
+                min = match (val, min) {
+                    (Value::Integer(val), Value::Integer(min)) => {
+                        Value::Integer(i64::min(val, min))
+                    }
+                    (Value::Float(val), Value::Integer(min)) => {
+                        Value::Float(f64::min(val, min as f64))
+                    }
+                    (Value::Integer(val), Value::Float(min)) => {
+                        Value::Float(f64::min(val as f64, min))
+                    }
+                    (Value::Float(val), Value::Float(min)) => Value::Float(f64::min(val, min)),
+                    _ => unreachable!(),
+                }
+            }
+
+            Ok(min) as Result<_, NotIterable>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "all",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::List(Box::new(TypeExpression::Or(vec![
+                TypeExpression::Bool,
+            ])))),
+        ),
+        move |value| {
+            for val in value.iter()? {
+                if let Value::Bool(false) = val {
+                    return Ok(Value::Bool(false));
+                }
+            }
+
+            Ok(Value::Bool(true)) as Result<_, NotIterable>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "any",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::List(Box::new(TypeExpression::Or(vec![
+                TypeExpression::Bool,
+            ])))),
+        ),
+        move |value| {
+            for val in value.iter()? {
+                if let Value::Bool(true) = val {
+                    return Ok(Value::Bool(true));
+                }
+            }
+
+            Ok(Value::Bool(false)) as Result<_, NotIterable>
+        },
+    ));
+
+    #[derive(Debug, Error)]
+    #[error("Value {a} cannot be compared with {b}")]
+    struct NotComparable {
+        a: Value,
+        b: Value,
+    }
+
+    insert(NativePatternMatch::new(
+        "sort",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::List(Box::new(TypeExpression::Any))),
+        ),
+        move |value| {
+            let Value::List(list) = value else {
+                unreachable!()
+            };
+            let mut list = list.to_vec();
+            let mut bad_comp = None;
+            list.sort_by(|a, b| {
+                if let Some(cmp) = a.partial_cmp(b) {
+                    cmp
+                } else {
+                    bad_comp = Some(NotComparable {
+                        a: a.clone(),
+                        b: b.clone(),
+                    });
+                    cmp::Ordering::Greater
+                }
+            });
+
+            if let Some(error) = bad_comp {
+                Err(error)
+            } else {
+                Ok(Value::List(list.into()))
+            }
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "keys",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::Dictionary(Box::new(TypeExpression::Any))),
+        ),
+        move |value| {
+            let Value::Map(dict) = value else {
+                unreachable!()
+            };
+            let keys: Vec<_> = dict
+                .keys()
+                .map(|key| Value::Text(rc_world::str_to_rc(key)))
+                .collect();
+
+            Ok(Value::List(keys.into())) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "values",
+        Pattern::Identifier(
+            t("x"),
+            Some(TypeExpression::Dictionary(Box::new(TypeExpression::Any))),
+        ),
+        move |value| {
+            let Value::Map(dict) = value else {
+                unreachable!()
+            };
+            let keys: Vec<_> = dict.values().cloned().collect();
+
+            Ok(Value::List(keys.into())) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "join",
+        Pattern::Identifier(t("sep"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(separator) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::NativePatternMatch(Rc::new(NativePatternMatch::new(
+                "join$ret",
+                Pattern::Identifier(
+                    t("x"),
+                    Some(TypeExpression::List(Box::new(TypeExpression::Text))),
+                ),
+                move |value| {
+                    let mut iter = value.iter()?;
+                    let mut string = String::new();
+
+                    if let Some(val) = iter.next() {
+                        let Value::Text(text) = val else {
+                            unreachable!()
+                        };
+                        string += text.as_ref();
+                    }
+
+                    for val in iter {
+                        let Value::Text(text) = val else {
+                            unreachable!()
+                        };
+                        string += &*separator;
+                        string += &*text;
+                    }
+
+                    Ok(Value::Text(rc_world::string_to_rc(string))) as Result<_, NotIterable>
+                },
+            )))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "split",
+        Pattern::Identifier(t("sep"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(separator) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::NativePatternMatch(Rc::new(NativePatternMatch::new(
+                "split$ret",
+                Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+                move |value| {
+                    let Value::Text(text) = value else {
+                        unreachable!()
+                    };
+
+                    let split: Vec<_> = text
+                        .split(&*separator)
+                        .map(|part| Value::Text(rc_world::str_to_rc(part)))
+                        .collect();
+                    Ok(Value::List(split.into())) as Result<_, NotIterable>
+                },
+            )))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "trim",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(text) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Text(rc_world::str_to_rc(
+                text.trim_start().trim_end(),
+            ))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "trim_start",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(text) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Text(rc_world::str_to_rc(text.trim_start()))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "trim_end",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(text) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Text(rc_world::str_to_rc(text.trim_end()))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "starts_with",
+        Pattern::Identifier(t("prefix"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(prefix) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::NativePatternMatch(Rc::new(NativePatternMatch::new(
+                "starts_with$ret",
+                Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+                move |value| {
+                    let Value::Text(text) = value else {
+                        unreachable!()
+                    };
+
+                    let starts_with = text.starts_with(&*prefix);
+                    Ok(Value::Bool(starts_with)) as Result<_, NotIterable>
+                },
+            )))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "ends_with",
+        Pattern::Identifier(t("postfix"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(postfix) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::NativePatternMatch(Rc::new(NativePatternMatch::new(
+                "ends_with$ret",
+                Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+                move |value| {
+                    let Value::Text(text) = value else {
+                        unreachable!()
+                    };
+
+                    let starts_with = text.ends_with(&*postfix);
+                    Ok(Value::Bool(starts_with)) as Result<_, NotIterable>
+                },
+            )))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "lowercase",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(text) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Text(rc_world::string_to_rc(text.to_lowercase())))
+                as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "uppercase",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+        move |value| {
+            let Value::Text(text) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Text(rc_world::string_to_rc(text.to_uppercase())))
+                as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "replace",
+        Pattern::MatchList(vec![
+            Pattern::Identifier(t("find"), Some(TypeExpression::Text)),
+            Pattern::Identifier(t("subst"), Some(TypeExpression::Text)),
+        ]),
+        move |value| {
+            let Value::List(list) = value else {
+                unreachable!()
+            };
+            let [Value::Text(find), Value::Text(subst)] = &*list else {
+                unreachable!()
+            };
+            let find = find.clone();
+            let subst = subst.clone();
+
+            Ok(Value::NativePatternMatch(Rc::new(NativePatternMatch::new(
+                "replace$ret",
+                Pattern::Identifier(t("x"), Some(TypeExpression::Text)),
+                move |value| {
+                    let Value::Text(text) = value else {
+                        unreachable!()
+                    };
+
+                    let replaced = text.replace(find.as_ref(), &subst);
+                    Ok(Value::Text(rc_world::string_to_rc(replaced))) as Result<_, NotIterable>
+                },
+            )))) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+
+    built_ins
 }
 
 thread_local! {
-    /// The Ryan default builtins that are supplied as "batteries included". All default
-    /// builtins are guaranteed to finish executing and to not access the outside
+    /// The Ryan default built_ins that are supplied as "batteries included". All default
+    /// built_ins are guaranteed to finish executing and to not access the outside
     /// environment, in compliance to Ryan's key principles.
-    pub static BUILTINS: Rc<HashMap<Rc<str>, Value>> = Rc::new(build_builtins());
+    pub static BUILT_INS: Rc<HashMap<Rc<str>, Value>> = Rc::new(build_built_ins());
 }

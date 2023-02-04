@@ -23,7 +23,7 @@ pub enum Format {
     /// content.
     Text,
     /// Import the value as a Ryan. This will execute the provided content as a Ryan
-    /// program and will returng its output value.
+    /// program and will returning its output value.
     Ryan,
 }
 

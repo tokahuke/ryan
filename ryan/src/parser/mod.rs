@@ -30,7 +30,7 @@ pub use self::operation::{
 };
 pub use self::pattern::{MatchDictItem, Pattern};
 pub use self::types::{Type, TypeExpression};
-pub use self::value::{NotRepresentable, PatternMatch, Value};
+pub use self::value::{NotIterable, NotRepresentable, PatternMatch, Value};
 
 /// The Pest parser for Ryan.
 #[allow(missing_docs)]
@@ -41,7 +41,7 @@ struct Parser;
 /// An entry of a post-parsing error, logged by [`ErrorLogger`].
 #[derive(Debug)]
 pub struct ErrorEntry {
-    /// The begining and end of the offending code.
+    /// The beginning and end of the offending code.
     pub span: (usize, usize),
     /// The error message for this error.
     pub error: String,
@@ -49,7 +49,7 @@ pub struct ErrorEntry {
 
 /// A logger of errors that happen post-parsing. Post parsing always succeeds, even with
 /// a list of errors. It's the whole parsing processing that fails if there are
-/// post-poarsing errors.
+/// post-parsing errors.
 #[derive(Debug, Default)]
 pub struct ErrorLogger {
     /// The list of errors found during post-parsing, in the orders they were found.

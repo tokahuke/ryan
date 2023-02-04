@@ -529,7 +529,7 @@ dependencies = [
  "anyhow",
  "atty",
  "clap",
- "ryan 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryan 0.1.0",
  "serde_json",
  "termcolor",
  "termcolor-json",

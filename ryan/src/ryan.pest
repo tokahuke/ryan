@@ -30,8 +30,8 @@ unsigned = @{
 expression = { prefixOp* ~ term ~ postfixOp* ~ (binaryOp ~ prefixOp* ~ term ~ postfixOp*)* }
 binaryOp = _{
     orOp | andOp | equalsOp | notEqualsOp | typeMatchesOp | greaterEqualOp | greaterOp 
-    | lesserEqualOp | lesserOp | lesserEqualOp | plusOp | minusOp | timesOp | dividedOp 
-    | remainderOp | defaultOp | juxtapositionOp 
+    | lesserEqualOp | lesserOp | lesserEqualOp | isContainedOp | plusOp | minusOp | timesOp 
+    | dividedOp | remainderOp | defaultOp | juxtapositionOp 
 }
 	orOp = { "or" }
     andOp = { "and" } 
@@ -42,6 +42,7 @@ binaryOp = _{
     greaterEqualOp = { ">=" }
     lesserOp = { "<" }
     lesserEqualOp = { "<=" }
+    isContainedOp = { "in" }
     plusOp = { "+" }
     minusOp = { "-" }
     timesOp = { "*" }
@@ -61,6 +62,7 @@ term = _{
     list
     | listComprehension
     | dict 
+    | dictComprehension
     | conditional
     | literal
     | import
@@ -78,9 +80,10 @@ term = _{
 
 // Comprehensions:
 listComprehension = { "[" ~ expression ~ (forClause)+ ~ ifGuard? ~ "]" }
+dictComprehension = { "{" ~ keyValueClause ~ (forClause)+ ~ ifGuard? ~ "}" }
     forClause = { "for" ~ pattern ~ "in" ~ expression }
     ifGuard = { "if" ~ expression }
-
+    keyValueClause = { expression ~ ":" ~ expression }
 
 // Patterns:
 pattern = {

@@ -26,9 +26,9 @@ fn ryan_to_python(py: Python, value: &Value) -> PyResult<PyObject> {
                 .to_object(py),
         )?
         .into()),
-        val => Err(PyValueError::new_err(
-            format!("Unrepresentable value: {val}"),
-        ))
+        val => Err(PyValueError::new_err(format!(
+            "Unrepresentable value: {val}"
+        ))),
     }
 }
 

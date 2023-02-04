@@ -5,8 +5,6 @@
 
 # The Art of Ryan
 
-<!-- Sprinkle types along the way... -->
-
 - [Hello... Jason!?](./art-of-ryan/hello-json.md)
 - [Simple types](./art-of-ryan/simple-types.md)
 - [Variables](./art-of-ryan/variables.md)
@@ -21,3 +19,8 @@
 - [The Ryan CLI](./integrating/the-ryan-cli.md)
 - [Rust](./integrating/rust.md)
 - [Python](./integrating/python.md)
+- [JavaScript](./integrating/javascript.md)
+
+# Reference
+
+- [List of built-ins](./reference/built-ins.md)

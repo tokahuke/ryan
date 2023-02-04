@@ -26,13 +26,13 @@ pub enum Binding {
         /// The code to be executed if the pattern is satisfied.
         block: Block,
     },
-    /// A destructuing match that binds the variables provided by the pattern to the
+    /// A destructuring match that binds the variables provided by the pattern to the
     /// corresponding bits and pieces returned by the block of code.
     Destructuring {
         /// The pattern against which to bind the result of the block.
         pattern: Pattern,
-        ///The block to be executed to produce the value against which the pattern will
-        /// be natched.
+        /// The block to be executed to produce the value against which the pattern will
+        /// be matched.
         block: Block,
     },
     /// A type definition. This binds an identifier to a type value.
@@ -104,7 +104,7 @@ impl Binding {
 
                 Binding::PatternMatchDefinition {
                     identifier: identifier
-                        .expect("tere is always an identifier in a pattern match defition"),
+                        .expect("tere is always an identifier in a pattern match definition"),
                     pattern: pattern.expect("there is always a pattern in a pattern definition"),
                     block: block.expect("there is always an expression in a pattern definition"),
                 }
@@ -142,7 +142,7 @@ impl Binding {
 
                 Binding::TypeDefinition {
                     identifier: identifier
-                        .expect("tere is always an identifier in a type definition"),
+                        .expect("there is always an identifier in a type definition"),
                     type_expression: type_expression
                         .expect("there is always an expression in a type definition"),
                 }

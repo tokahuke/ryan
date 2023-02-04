@@ -4,7 +4,7 @@ pub mod loader;
 pub mod native;
 
 pub use loader::{DefaultImporter, ImportLoader, NoImport};
-pub use native::{NativePatternMatch, BUILTINS};
+pub use native::{NativePatternMatch, BUILT_INS};
 use std::{cell::RefCell, collections::HashMap, error::Error, fmt::Debug, rc::Rc};
 
 use self::loader::ImportState;
@@ -18,20 +18,20 @@ use crate::{
 pub struct Environment {
     import_state: Rc<RefCell<ImportState>>,
     /// The name of the current model. It can be `None` if no module is set. This happens
-    /// when, e.g., executin Ryan from a supplied string without any extra configuration.
+    /// when, e.g., executing Ryan from a supplied string without any extra configuration.
     pub current_module: Option<Rc<str>>,
-    builtins: Rc<HashMap<Rc<str>, Value>>,
+    built_ins: Rc<HashMap<Rc<str>, Value>>,
 }
 
 impl Environment {
     /// Creates a new environment with the default settings (default importer and default
-    /// builtins) with an optional current module name.
+    /// built_ins) with an optional current module name.
     pub fn new(module: Option<&str>) -> Environment {
-        Environment {
-            import_state: Rc::default(),
-            current_module: module.map(|f| rc_world::str_to_rc(f)),
-            builtins: self::native::BUILTINS.with(Clone::clone),
+        let mut builder = Environment::builder();
+        if let Some(module) = module {
+            builder = builder.module(module);
         }
+        builder.build()
     }
 
     /// Creates an environment builder. Use this to tweak Ryan.
@@ -39,16 +39,16 @@ impl Environment {
         EnvironmentBuilder {
             import_loader: Box::new(DefaultImporter),
             current_module: None,
-            builtins: self::native::BUILTINS.with(Clone::clone),
+            built_ins: None,
         }
     }
 
-    /// Returs the value associated with a given builtin name.
+    /// Returns the value associated with a given builtin name.
     pub fn builtin(&self, id: &str) -> Option<Value> {
-        self.builtins.get(id).map(Clone::clone)
+        self.built_ins.get(id).map(Clone::clone)
     }
 
-    /// Tries to push an import to the improt stack.
+    /// Tries to push an import to the import stack.
     fn try_push_import(&self, path: &str) -> Result<Environment, Box<dyn Error + 'static>> {
         let resolved = self
             .import_state
@@ -57,7 +57,7 @@ impl Environment {
         Ok(Environment {
             import_state: self.import_state.clone(),
             current_module: Some(resolved),
-            builtins: self.builtins.clone(),
+            built_ins: self.built_ins.clone(),
         })
     }
 
@@ -91,11 +91,11 @@ impl Environment {
 pub struct EnvironmentBuilder {
     import_loader: Box<dyn ImportLoader>,
     current_module: Option<Rc<str>>,
-    builtins: Rc<HashMap<Rc<str>, Value>>,
+    built_ins: Option<Rc<HashMap<Rc<str>, Value>>>,
 }
 
 impl EnvironmentBuilder {
-    /// Buils the environment with the supplied configurations.
+    /// Builds the environment with the supplied configurations.
     pub fn build(self) -> Environment {
         Environment {
             import_state: Rc::new(RefCell::new(ImportState {
@@ -104,7 +104,9 @@ impl EnvironmentBuilder {
                 import_stack: Default::default(),
             })),
             current_module: self.current_module,
-            builtins: self.builtins,
+            built_ins: self
+                .built_ins
+                .unwrap_or_else(|| BUILT_INS.with(Clone::clone)),
         }
     }
 
@@ -126,9 +128,9 @@ impl EnvironmentBuilder {
         self
     }
 
-    /// Sets the builtins for the environment.
-    pub fn builtins(mut self, builtins: Rc<HashMap<Rc<str>, Value>>) -> Self {
-        self.builtins = builtins;
+    /// Sets the built_ins for the environment.
+    pub fn built_ins(mut self, built_ins: Rc<HashMap<Rc<str>, Value>>) -> Self {
+        self.built_ins = Some(built_ins);
         self
     }
 }

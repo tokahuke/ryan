@@ -6,7 +6,7 @@ use std::{cell::RefCell, collections::HashMap, fmt::Display, rc::Rc};
 
 use crate::{rc_world, utils::QuotedStr};
 
-use super::ErrorLogger;
+use super::{ErrorLogger, comprehension::DictComprehension};
 use super::Rule;
 use super::State;
 use super::{comprehension::ListComprehension, operation::BinaryOperator};
@@ -36,6 +36,7 @@ lazy_static::lazy_static! {
                 | Op::infix(Rule::greaterEqualOp, Left)
                 | Op::infix(Rule::lesserOp, Left)
                 | Op::infix(Rule::lesserEqualOp, Left)
+                | Op::infix(Rule::isContainedOp, Left)
             )
             .op(Op::infix(Rule::plusOp, Left) | Op::infix(Rule::minusOp, Left))
             .op(Op::infix(Rule::remainderOp, Left))
@@ -56,7 +57,7 @@ pub enum Expression {
     /// Based on an expressing returning a `bool`, executes either of the supplied
     /// expressions.
     Conditional(Box<Expression>, Box<Expression>, Box<Expression>),
-    /// Builds a Ryan value from a litteral.
+    /// Builds a Ryan value from a literal.
     Literal(Literal),
     /// Builds a Ryan value of a binary operation over two Ryan values.
     BinaryOperation(Box<BinaryOperation>),
@@ -68,6 +69,8 @@ pub enum Expression {
     Import(Import),
     /// Creates a Ryan value from a list comprehension.
     ListComprehension(Box<ListComprehension>),
+    /// Creates a Ryan value from a dict comprehension.
+    DictComprehension(Box<DictComprehension>),
 }
 
 impl Default for Expression {
@@ -98,6 +101,7 @@ impl Display for Expression {
             }
             Self::Import(import) => write!(f, "{import}")?,
             Self::ListComprehension(comprehension) => write!(f, "{comprehension}")?,
+            Self::DictComprehension(comprehension) => write!(f, "{comprehension}")?,
         }
 
         Ok(())
@@ -107,7 +111,7 @@ impl Display for Expression {
 impl Expression {
     pub(super) fn parse(logger: &mut ErrorLogger, pairs: Pairs<'_, Rule>) -> Self {
         let logger_cell = Rc::new(RefCell::new(logger));
-        let logger_cell_posfix = logger_cell.clone();
+        let logger_cell_postfix = logger_cell.clone();
 
         PRATT_PARSER
             .map_primary(|pair| match pair.as_rule() {
@@ -145,6 +149,9 @@ impl Expression {
                 Rule::listComprehension => Expression::ListComprehension(Box::new(
                     ListComprehension::parse(*logger_cell.borrow_mut(), pair.into_inner()),
                 )),
+                Rule::dictComprehension => Expression::DictComprehension(Box::new(
+                    DictComprehension::parse(*logger_cell.borrow_mut(), pair.into_inner()),
+                )),
                 _ => unreachable!(),
             })
             .map_infix(|left, op, right| {
@@ -162,7 +169,7 @@ impl Expression {
             })
             .map_postfix(move |left, op| {
                 Expression::PostfixOperation(Box::new(PostfixOperation {
-                    op: PostfixOperator::parse(*logger_cell_posfix.borrow_mut(), op),
+                    op: PostfixOperator::parse(*logger_cell_postfix.borrow_mut(), op),
                     left,
                 }))
             })
@@ -208,6 +215,9 @@ impl Expression {
             Self::ListComprehension(comprehension) => {
                 comprehension.capture(state, provided, values)?
             }
+            Self::DictComprehension(comprehension) => {
+                comprehension.capture(state, provided, values)?
+            }
         };
 
         Some(())
@@ -250,6 +260,7 @@ impl Expression {
             Self::PostfixOperation(op) => op.eval(state)?,
             Self::Import(import) => import.eval(state)?,
             Self::ListComprehension(comprehension) => comprehension.eval(state)?,
+            Self::DictComprehension(comprehension) => comprehension.eval(state)?,
         };
 
         Some(returned)

@@ -11,7 +11,7 @@ use super::ErrorLogger;
 use super::Rule;
 use super::State;
 
-/// An operatioin involving two Ryan values.
+/// An operation involving two Ryan values.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum BinaryOperator {
     /// Logical and.
@@ -25,7 +25,7 @@ pub enum BinaryOperator {
     // #[deprecated]
     /// Whether the value is of a certain type (to be deprecated).
     TypeMatches,
-    /// Greater than comparision.
+    /// Greater than comparison.
     GreaterThen,
     /// Greater than or equality comparison.
     GreaterEqual,
@@ -33,6 +33,8 @@ pub enum BinaryOperator {
     LesserThen,
     /// Lesser than or equality comparison.
     LesserEqual,
+    /// Set inclusion
+    IsContainedIn,
     /// Addition or concatenation.
     Plus,
     /// Subtraction.
@@ -61,6 +63,7 @@ impl Display for BinaryOperator {
             Self::GreaterEqual => write!(f, ">=")?,
             Self::LesserThen => write!(f, "<")?,
             Self::LesserEqual => write!(f, "<=")?,
+            Self::IsContainedIn => write!(f, "in")?,
             Self::Plus => write!(f, "+")?,
             Self::Minus => write!(f, "-")?,
             Self::Times => write!(f, "*")?,
@@ -86,6 +89,7 @@ impl BinaryOperator {
             Rule::greaterEqualOp => BinaryOperator::GreaterEqual,
             Rule::lesserOp => BinaryOperator::LesserThen,
             Rule::lesserEqualOp => BinaryOperator::LesserEqual,
+            Rule::isContainedOp => BinaryOperator::IsContainedIn,
             Rule::plusOp => BinaryOperator::Plus,
             Rule::minusOp => BinaryOperator::Minus,
             Rule::timesOp => BinaryOperator::Times,
@@ -124,7 +128,7 @@ impl PrefixOperator {
     }
 }
 
-/// An operation involving one Ryan value, where the value preceeds it.
+/// An operation involving one Ryan value, where the value precedes it.
 #[derive(Debug, Clone, PartialEq)]
 pub enum PostfixOperator {
     /// Get the value associated with a key in a dictionary using the familiar `.` notation.
@@ -310,6 +314,16 @@ impl BinaryOperation {
             }
             (Value::Float(left), BinaryOperator::LesserEqual, Value::Float(right)) => {
                 Value::Bool(left <= right)
+            }
+
+            (val, BinaryOperator::IsContainedIn, Value::List(list)) => {
+                Value::Bool(list.iter().any(|item| *item == val))
+            }
+            (Value::Text(key), BinaryOperator::IsContainedIn, Value::Map(map)) => {
+                Value::Bool(map.contains_key(&*key))
+            }
+            (Value::Text(sub), BinaryOperator::IsContainedIn, Value::Text(text)) => {
+                Value::Bool(text.contains(&*sub))
             }
 
             (Value::Integer(left), BinaryOperator::Plus, Value::Integer(right)) => {
