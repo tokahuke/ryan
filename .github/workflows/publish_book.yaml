@@ -22,7 +22,8 @@ jobs:
 
       - name: Build "Ryan online"
         run: |
-          cd /home/runner/work/ryan/ryan-js/ryan-online
+          cd /home/runner/work/ryan
+          ls
           make build
           cp -r ./dist /home/runner/work/ryan-online
 
