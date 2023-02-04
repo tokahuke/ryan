@@ -23,7 +23,8 @@ jobs:
       - name: Build "Ryan online"
         run: |
           cd $(git rev-parse --show-cdup) # repo root
-          cd ./ryan-js/ryan-online
+          ls
+          cd ryan-js/ryan-online
           make build
           cp -r ./dist /home/runner/work/ryan-online
 
