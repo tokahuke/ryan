@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   - book-of-ryan/*
   pull_request:
 
 jobs:
@@ -22,22 +20,41 @@ jobs:
         with:
           mdbook-version: 'latest'
 
+      - name: Build "Ryan online"
+        run: |
+          cd $(git rev-parse --show-cdup) # repo root
+          cd ./ryan-js/ryan-online
+          make build
+          cp -r ./dist /home/runner/work/ryan-online
+
       - name: MdBook build
         run: |
+          cd $(git rev-parse --show-cdup) # repo root
           cd book-of-ryan
           mdbook build
           cp -r ./book /home/runner/work/book-of-ryan
 
-      - name: Copy artifacts into GitHub Pages repo
+      - name: Checkout GitHub Pages repo
         run: |
           cd /home/runner/work
           git clone https://${{ secrets.GH_PAT }}@github.com/tokahuke/tokahuke.github.io.git
           cd tokahuke.github.io
+      
+      - name: Copy MdBook into GitHub pages
+        run: |
           mkdir -p ./static/book-of-ryan
           rm -rf ./static/book-of-ryan
           mv /home/runner/work/book-of-ryan ./static/book-of-ryan
+      
+      - name: Copy "Ryan online" into GitHub pages
+        run: |
+          mkdir -p ./static/ryan-online
+          rm -rf ./static/ryan-online
+          mv /home/runner/work/ryan-online ./static/ryan-online
+      
+      - name: Commit and push to GitHub pages
           git config --global user.email "noreply@users.github.io"
           git config --global user.name "Pedro B Arruda"
           git add static
-          git commit -m 'pushing Book of Ryan to GitHub Pages' || echo "it's ok to have nothing..."
+          git commit -m 'pushing Ryan to GitHub Pages' || echo "it's ok to have nothing..."
           git push

@@ -1,5 +1,5 @@
 [package]
-name = "ryan-js"
+name = "ryan-lang"
 version = "0.1.0"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 edition = "2021"
@@ -30,6 +30,7 @@ wee_alloc = { version = "0.4.5", optional = true }
 
 # Ryan!!
 ryan = "0.1.0"
+# ryan = { path = "../ryan" }
 js-sys = "0.3.60"
 thiserror = "1.0.38"
 

@@ -1,11 +1,13 @@
 # JavaScript wrapper for the Rust implementation of the Ryan configuration language.
 
+> 💡 Note: this is a package created for a Web environment using a bundler, such as `webpack`. 
+
 This is a JavaScript wrapper over the WASM Rust implementation of `ryan`.
 
 For basic usage, this module provides two main functions: `fromStr`, which reads
 and executes a Ryan program from a string and `fromStrWithEnv`. If you are wondering, no
 function is needed for serialization; you can use the standard `JSON.stringify` function
-for that (remeber: all JSON is valid Ryan).
+for that (remember: all JSON is valid Ryan).
 
 Here is a basic usage example:
 ```javascript
@@ -21,18 +23,18 @@ const value = fromStr(`
 
 ## Differences from other Ryan implementations
 
-WASM is a _much_ more hermetic enviroment than other arhcitectures. In WASM, we cannot
+WASM is a _much_ more hermetic environment than other architectures. In WASM, we cannot
 rely on the existence of a filesystem or of environment variables, things that the
 standard Ryan loader depends on. Therefore, a different approach to module loading is
 needed.
 
 This implementation uses the properties of a given JS object to implement a
-module resolution tree (a tree of nested dictionaries, where the leaves are stringss),
+module resolution tree (a tree of nested dictionaries, where the leaves are strings),
 a poorman's filesystem of sorts. An example of how to set up a module system is shown
 below:
 
 ```javascript
-import { Environment, JsLoader, fromStrWithEnv } from "ryan"
+import { Environment, JsLoader, fromStrWithEnv } from "ryan-lang"
 const env = Environment
   .builder()
   .loader(new JsLoader({
@@ -58,14 +60,14 @@ const value = fromStrWithEnv(env, `
 ### Note
 
 Unfortunately, the Rust `Loader` trait is not `async`. Therefore, loading from URLs is
-not currently suported.
+not currently supported.
 
 
 ## How to use Ryan
 
 You can use Ryan in your project via pip:
 ```bash
-pip install ryan-lang
+npm i ryan-lang
 ```
 Additionally, the Ryan CLI might be useful to have for testing and debugging. See 
 [the main page](https://github.com/tokahuke/ryan) for the project for more information.

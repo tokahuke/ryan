@@ -7,6 +7,7 @@
 - Dict comprehension.
 - More built-ins.
 - Make operations short-circuiting.
+- Forgiving numbers.
 
 --- v0.2.0 and beyond
 
