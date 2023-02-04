@@ -47,16 +47,17 @@ jobs:
         run: |
           cd /home/runner/work
           git clone https://${{ secrets.GH_PAT }}@github.com/tokahuke/tokahuke.github.io.git
-          cd tokahuke.github.io
       
       - name: Copy MdBook into GitHub pages
         run: |
+          cd /home/runner/work/tokahuke.github.io
           mkdir -p ./static/book-of-ryan
           rm -rf ./static/book-of-ryan
           mv /home/runner/work/book-of-ryan ./static/book-of-ryan
       
       - name: Copy "Ryan online" into GitHub pages
         run: |
+          cd /home/runner/work/tokahuke.github.io
           mkdir -p ./static/ryan-online
           rm -rf ./static/ryan-online
           mv /home/runner/work/ryan-online ./static/ryan-online
