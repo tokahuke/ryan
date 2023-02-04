@@ -20,6 +20,17 @@ jobs:
         with:
           mdbook-version: 'latest'
 
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          profile: minimal
+      
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
       - name: Build "Ryan online"
         run: |
           cd /home/runner/work/ryan/ryan/ryan-js/ryan-online
