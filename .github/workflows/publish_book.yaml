@@ -63,6 +63,7 @@ jobs:
       
       - name: Commit and push to GitHub pages
         run: |
+          cd /home/runner/work/tokahuke.github.io
           git config --global user.email "noreply@users.github.io"
           git config --global user.name "Pedro B Arruda"
           git add static
