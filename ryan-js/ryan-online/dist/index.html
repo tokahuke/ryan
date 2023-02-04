@@ -2,31 +2,85 @@
 <html>
     <head>
         <title>Try Ryan online</title>
-        <script src="./main.js"></script>
+        
+        <!-- Material icons 'n stuff -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <style>
+            .material-symbols-rounded {
+              font-variation-settings:
+              'FILL' 1,
+              'wght' 400,
+              'GRAD' 0,
+              'opsz' 48
+            }
+            </style>
+        
+        <!-- My stuff... -->
+        <style>
+            #page-container {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
             #editors {
                 display: flex;
+                height: 100%;
             }
             #editor-area {
-                height: 90vh;
-                width: 600px;
+                width: 50%;
+                height: 100%;
             }
             #display-area {
-                height: 90vh;
-                width: 600px;
+                width: 50%;
+                height: 100%;
             }
 
             body {
                 color: #f8f8f2;
                 background-color: #131411;
-                padding: 0em 1em;
+            }
+            html, body {
+                margin: 0;
+                padding: 0;
             }
 
-            h1 {
-                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-                font-style: italic;
+            header {
+                display: flex;
+                align-items: center;
             }
-            
+            header #menu {
+                margin-left: auto;
+                padding-right: 1em;
+            }
+            header .icon-container {
+                display: inline-flex;
+                flex-direction: column;
+                background-color: transparent;
+                color: #f92672;
+                border: none;
+                cursor: pointer;
+                min-width: 60px;
+            }
+            header .icon-container:hover {
+                color: #f92672;
+            }
+            header .icon-desc {
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
+                    'source-code-pro', monospace;
+                font-size: xx-small;
+                font-weight: bolder;
+                margin-top: 4px;
+            }
+            h1 {
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
+                    'source-code-pro', monospace;
+                font-style: italic;
+                margin: 0;
+                padding-left: 1em;
+                padding-top: 0.5em;
+                padding-bottom: 0.5em;
+            }
             h1 #try {
                 color: #65d6ec;
             }
@@ -49,24 +103,29 @@
         </style>
     </head>
     <body>
-        <h1>
-            <span id=try>try</span>
-            <span class="braces">{</span>
-            <span id="ryan">Ryan</span>
-            <span id="online"> online<span id="bang">!</span></span>
-            <span class="braces">}</span>
-        </h1>
-        <div id="editors">
-        <div id="editor-area">// This is some sample Ryan code
-// Edit at will!
-
-let number_of_lights = 4;
-
-{
-    picard: number_of_lights,
-    gul_madred: number_of_lights + 1,
-}</div>
-    <div id="display-area"></div>
-    </div>
+        <div id="page-container">
+            <header>
+                <h1>
+                    <span id=try>try</span>
+                    <span class="braces">{</span>
+                    <span id="ryan">Ryan</span>
+                    <span id="online"> online<span id="bang">!</span></span>
+                    <span class="braces">}</span>
+                </h1>
+                <div id="menu">
+                    <button class="icon-container" id="share-button">
+                        <span class="material-symbols-rounded">
+                            share
+                        </span>
+                        <span class="icon-desc">COPY LINK</span>
+                    </button>
+                </div>
+            </header>
+            <div id="editors">
+                <div id="editor-area"></div>
+                <div id="display-area"></div>
+            </div>
+        </div>
+        <script src="./main.js"></script>
     </body>
 </html>
