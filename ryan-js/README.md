@@ -21,6 +21,24 @@ const value = fromStr(`
 `); // { picard: 4, gulMadred: 5 }
 ```
 
+## How to use Ryan
+
+You can use Ryan in your project via pip:
+```bash
+npm i ryan-lang
+```
+Additionally, the Ryan CLI might be useful to have for testing and debugging. See 
+[the main page](https://github.com/tokahuke/ryan) for the project for more information.
+
+## Resources for Ryan
+
+* [Main project page](https://github.com/tokahuke/ryan) with more information.
+* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
+* [Try out Ryan in your browser](https://tokahuke.github.io/ryan-online/).
+* [The Rust docs](https://docs.rs/ryan) also have good info, even if you don't care about Rust.
+* [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
+
+
 ## Differences from other Ryan implementations
 
 WASM is a _much_ more hermetic environment than other architectures. In WASM, we cannot
@@ -61,23 +79,6 @@ const value = fromStrWithEnv(env, `
 
 Unfortunately, the Rust `Loader` trait is not `async`. Therefore, loading from URLs is
 not currently supported.
-
-
-## How to use Ryan
-
-You can use Ryan in your project via pip:
-```bash
-npm i ryan-lang
-```
-Additionally, the Ryan CLI might be useful to have for testing and debugging. See 
-[the main page](https://github.com/tokahuke/ryan) for the project for more information.
-
-## Resources for Ryan
-
-* [Main project page](https://github.com/tokahuke/ryan) with more information.
-* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
-* [The Rust docs](https://docs.rs/ryan) also have good info, even if you don't care about Rust.
-* [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
 
 ## Limitations of this library
 

@@ -11,6 +11,12 @@ values are coming from, giving them a versatile interface while keeping things s
 on your side. Ryan makes that bridge while keeping the user's code short and
 maintanable.
 
+## Resources for Ryan
+
+* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
+* [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
+* [Try out Ryan in your browser](https://tokahuke.github.io/ryan-online/).
+
 ## How to use Ryan
 
 ### One-liner (Linux, MacOS)
@@ -39,15 +45,8 @@ Depending on your language, you can install a binding to Ryan from your standard
 ```bash
 cargo install ryan      # Rust
 pip install ryan-lang   # Python
-npm install ryan-js     # JavaScript (web)
+npm install ryan-lang   # JavaScript (web)
 ```
-
-## Resources for Ryan
-
-* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
-* [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
-* [Run Ryan in your browser](https://github.com/tokahuke/ryan/tree/main/ryan-js)
-(thanks to the magic of WASM) _(comming soon)_.
 
 ## Isn't this similar to X?
 

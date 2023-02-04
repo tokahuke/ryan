@@ -19,9 +19,9 @@ Additionally, the Ryan CLI might be useful to have for testing and debugging. Se
 
 * [Main project page](https://github.com/tokahuke/ryan) with more information.
 * [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
+* [Try out Ryan in your browser](https://tokahuke.github.io/ryan-online/).
 * [The Rust docs](https://docs.rs/ryan) also have good info, even if you don't care about Rust.
 * [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
-* Run Ryan in your browser (thanks to the magic of WASM) _(comming soon)_.
 
 ## Limitations of this library
 
