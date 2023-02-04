@@ -22,16 +22,13 @@ jobs:
 
       - name: Build "Ryan online"
         run: |
-          cd $(git rev-parse --show-cdup) # repo root
-          ls
-          cd ryan-js/ryan-online
+          cd /home/runner/work/ryan/ryan-js/ryan-online
           make build
           cp -r ./dist /home/runner/work/ryan-online
 
       - name: MdBook build
         run: |
-          cd $(git rev-parse --show-cdup) # repo root
-          cd book-of-ryan
+          cd /home/runner/work/ryan/book-of-ryan
           mdbook build
           cp -r ./book /home/runner/work/book-of-ryan
 
