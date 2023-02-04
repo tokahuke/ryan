@@ -53,6 +53,7 @@ jobs:
           mv /home/runner/work/ryan-online ./static/ryan-online
       
       - name: Commit and push to GitHub pages
+        run: |
           git config --global user.email "noreply@users.github.io"
           git config --global user.name "Pedro B Arruda"
           git add static
