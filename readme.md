@@ -4,9 +4,9 @@
     src="./mascot.jpg"
     width=128
     height=128
-    align="center"
     style="margin-right: 18px"
-/>
+/><br>
+<em align="center">Say hello to Ryan!</em>
 </p>
 
 # Ryan: a configuration language for the practical programmer
