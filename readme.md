@@ -4,7 +4,7 @@
     src="./mascot.jpg"
     width=128
     height=128
-    style="margin-right: 18px"
+    style="margin: 18px"
 /><br>
 <em align="center">Say hello to Ryan!</em>
 </p>
