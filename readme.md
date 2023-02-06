@@ -1,25 +1,27 @@
-<div style="display: flex">
+# Ryan: a configuration language for the practical programmer
+
+<p > 
     <img
         alt="Say hello to Ryan!"
         src="./mascot.jpg"
         width=128
         height=128
-        style="padding: 18px; margin-left: auto, margin-right: auto"
+        align="left"
+        style="margin-right: 18px"
     />
-</div>
 
-# Ryan: a configuration language for the practical programmer
+    Ryan is a minimal programming language that produces JSON (and therefore YAML) as
+    output. It has builtin support for variables, imports and function calls while keeping
+    things simple. The focus of these added features is to reduce code reuse when
+    maintaining a sizable codebase of configuration files. It can also be used as an
+    alternative to creating an overly complex CLI interfaces. Unsure on whether a value
+    should be stored in a file or in an environment variable? Why not declare a huge
+    configuration file with everything in it? You leave the users to decide where the
+    values are coming from, giving them a versatile interface while keeping things simple
+    on your side. Ryan makes that bridge while keeping the user's code short and
+    maintanable.
+</p>
 
-Ryan is a minimal programming language that produces JSON (and therefore YAML) as
-output. It has builtin support for variables, imports and function calls while keeping
-things simple. The focus of these added features is to reduce code reuse when
-maintaining a sizable codebase of configuration files. It can also be used as an
-alternative to creating an overly complex CLI interfaces. Unsure on whether a value
-should be stored in a file or in an environment variable? Why not declare a huge
-configuration file with everything in it? You leave the users to decide where the
-values are coming from, giving them a versatile interface while keeping things simple
-on your side. Ryan makes that bridge while keeping the user's code short and
-maintanable.
 
 ## Resources for Ryan
 
