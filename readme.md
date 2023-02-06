@@ -1,3 +1,5 @@
+
+# Ryan: a configuration language for the practical programmer
 <p align="center">
 <img
     alt="Say hello to Ryan!"
@@ -8,8 +10,6 @@
 /><br>
 <em align="center">Say hello to Ryan!</em>
 </p>
-
-# Ryan: a configuration language for the practical programmer
 
 <p > 
 Ryan is a minimal programming language that produces JSON (and therefore YAML) as
