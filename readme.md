@@ -1,3 +1,13 @@
+<div style="display: flex">
+    <img
+        alt="Say hello to Ryan!"
+        src="./mascot.jpg"
+        width=128
+        height=128
+        style="padding: 18px; margin-left: auto, margin-right: auto"
+    />
+</div>
+
 # Ryan: a configuration language for the practical programmer
 
 Ryan is a minimal programming language that produces JSON (and therefore YAML) as
