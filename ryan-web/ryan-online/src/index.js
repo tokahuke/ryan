@@ -1,4 +1,4 @@
-import * as ryan from "ryan-lang";
+import * as ryan from "ryan-lang-web";
 import ace from "brace";
 import "brace/mode/javascript";
 import "brace/mode/json";

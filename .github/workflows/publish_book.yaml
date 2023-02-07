@@ -33,7 +33,7 @@ jobs:
 
       - name: Build "Ryan online"
         run: |
-          cd /home/runner/work/ryan/ryan/ryan-js/ryan-online
+          cd /home/runner/work/ryan/ryan/ryan-web/ryan-online
           make build
           cp -r ./dist /home/runner/work/ryan-online
 
@@ -45,7 +45,7 @@ jobs:
 
       - name: Checkout GitHub Pages repo
         run: |
-          cd /home/runner/work
+          cd /home/runner/work  
           git clone https://${{ secrets.GH_PAT }}@github.com/tokahuke/tokahuke.github.io.git
       
       - name: Copy MdBook into GitHub pages
