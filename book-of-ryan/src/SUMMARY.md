@@ -11,7 +11,7 @@
 - [Not-so-simple types](./art-of-ryan/not-so-simple-types.md)
 - [Importing things](./art-of-ryan/importing.md)
 - [Pattern matching](./art-of-ryan/pattern-matching.md)
-- [Types](./types.md)
+- [Types](./art-of-ryan/types.md)
 - [Comprehensions](./art-of-ryan/comprehensions.md)
 
 # Integrating Ryan
