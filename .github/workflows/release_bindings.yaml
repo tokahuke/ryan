@@ -6,7 +6,7 @@ on:
       - "bindings-v*"
 
 jobs:
-  python:
+  "Python":
     runs-on: ubuntu-latest
     permissions: write-all
     concurrency:
@@ -17,8 +17,9 @@ jobs:
         run: |
           cd ryan-python
           make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
-  js-wasm:
+  "WASM for web":
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v2
 
