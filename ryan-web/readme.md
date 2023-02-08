@@ -25,7 +25,7 @@ const value = fromStr(`
 
 You can use Ryan in your project via pip:
 ```bash
-npm i ryan-lang
+npm i ryan-lang-web
 ```
 Additionally, the Ryan CLI might be useful to have for testing and debugging. See 
 [the main page](https://github.com/tokahuke/ryan) for the project for more information.

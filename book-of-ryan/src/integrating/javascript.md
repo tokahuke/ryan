@@ -6,4 +6,6 @@ There are two ways you can use Ryan with JavaScript: you can use Ryan in a Web e
 
 To install Ryan for a Web environment, 
 
-## Ryan with NodeJS.
+## Ryan with NodeJS
+
+TODO: Nodejs binding are still cookin'

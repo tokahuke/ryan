@@ -26,7 +26,7 @@ use termcolor::{ColorChoice, StandardStream};
 #[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
-    /// The name of the file to be executed. Pass `-` ro read from standard input.
+    /// The name of the file to be executed. Pass `-` to read from standard input.
     file: String,
     /// Hermetic mode: disables all imports.
     #[clap(long)]
