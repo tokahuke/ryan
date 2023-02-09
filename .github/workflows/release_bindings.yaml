@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  "Python":
+  "python":
     runs-on: ubuntu-latest
     permissions: write-all
     concurrency:
@@ -18,7 +18,8 @@ jobs:
         run: |
           cd ryan-python
           make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
-  "CLI from cargo install":
+  
+  "cargo-install":
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v2
@@ -36,25 +37,25 @@ jobs:
       - name: Cargo Publish
         run: |
           cargo publish -p ryan-cli
-      
-  # "WASM for web":
-  #   runs-on: ubuntu-latest
-  #   permissions: write-all
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Install rust
-  #     uses: actions-rs/toolchain@v1
-  #     with:
-  #       toolchain: stable
-  #       profile: minimal
-  #       override: true
-  #       target: wasm32-unknown-unknown
   
-  #     - name: Install wasm-pack
-  #       run: |
-  #         curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+  "javascript-web":
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+        target: wasm32-unknown-unknown
+  
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       
-  #     - name: Build JS bindings with Wasm Pack
-  #       run: |
-  #         echo "hello, world!" 
+      - name: Build JS bindings with Wasm Pack
+        run: |
+          echo "hello, world!" 
