@@ -1,6 +1,6 @@
 [package]
 name = "ryan"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 description = "Ryan: a configuration language for the practical programmer"
