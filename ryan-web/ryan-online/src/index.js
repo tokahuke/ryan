@@ -13,8 +13,10 @@ const sampleProgram = `// This is some sample Ryan code
 let number_of_lights = 4;
 
 {
-    picard: number_of_lights,
-    gul_madred: number_of_lights + 1,
+    lights: {
+        picard: number_of_lights,
+        gul_madred: number_of_lights + 1,
+    }
 }
 `;
 const initialCode = new URLSearchParams(location.search).get("c") || sampleProgram;

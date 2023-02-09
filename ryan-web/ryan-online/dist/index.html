@@ -2,19 +2,10 @@
 <html>
     <head>
         <title>Try Ryan online</title>
-        <link rel="icon" type="image/jpeg" href="./mascot.jpg"/>
+        <link rel="icon" type="image/jpeg" href="./mascot.png"/>
         
         <!-- Material icons 'n stuff -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        <style>
-            .material-symbols-rounded {
-              font-variation-settings:
-              'FILL' 1,
-              'wght' 400,
-              'GRAD' 0,
-              'opsz' 48
-            }
-            </style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         
         <!-- My stuff... -->
         <style>
@@ -28,13 +19,24 @@
                 display: flex;
                 height: 100%;
             }
-            #editor-area {
+            #editors .column {
                 width: 50%;
                 height: 100%;
             }
-            #display-area {
-                width: 50%;
+            #editors .editor {
+                width: 100%;
                 height: 100%;
+            }
+            #editors .header {
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
+                    'source-code-pro', monospace;
+                font-size: 8pt;
+                font-weight: lighter;
+                padding-left: 1em;
+                padding-top: 1em;
+                padding-bottom: 0.5em;
+                background-color: #2f3129;
+                color: #8f908a;
             }
 
             body {
@@ -49,12 +51,15 @@
             header {
                 display: flex;
                 align-items: center;
+                box-shadow: 2px 2px 2px 2px #131411;
+                z-index: 1;
             }
-            header #menu {
+            #menu {
                 margin-left: auto;
                 padding-right: 1em;
+                display: flex;
             }
-            header .icon-container {
+            .icon-container {
                 display: inline-flex;
                 flex-direction: column;
                 background-color: transparent;
@@ -63,10 +68,10 @@
                 cursor: pointer;
                 min-width: 60px;
             }
-            header .icon-container:hover {
+            .icon-container:hover {
                 color: #f92672;
             }
-            header .icon-desc {
+            .icon-desc {
                 font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
                     'source-code-pro', monospace;
                 font-size: xx-small;
@@ -78,9 +83,11 @@
                     'source-code-pro', monospace;
                 font-style: italic;
                 margin: 0;
-                padding-left: 1em;
+                padding-left: 0.75em;
                 padding-top: 0.5em;
                 padding-bottom: 0.5em;
+                display: flex;
+                align-items: center;
             }
             h1 #try {
                 color: #65d6ec;
@@ -101,30 +108,75 @@
             h1 .braces {
                 font-style: normal;
             }
+
+            .tooltip {
+                position: relative;
+            }
+            .tooltip .tooltip-text {
+                visibility: hidden;
+                position: absolute;
+                top: 120%;
+                left: -160%;
+                background-color: #101010;
+                padding: 12px 18px;
+                border-radius: 15px;
+                border-top-right-radius: 0;
+                box-shadow: 2px 2px 4px black;
+
+                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
+                    'source-code-pro', monospace;
+                font-size: 8px;
+                color: #e6e6e0;
+
+            }
+            .tooltip:hover .tooltip-text {
+                visibility: visible;
+            }
         </style>
     </head>
     <body>
         <div id="page-container">
             <header>
                 <h1>
-                    <span id=try>try</span>
-                    <span class="braces">{</span>
-                    <span id="ryan">Ryan</span>
-                    <span id="online"> online<span id="bang">!</span></span>
-                    <span class="braces">}</span>
+                    <img src="./mascot.png" height="36px" style="margin-right: 0.5em; border-radius: 50%;"/>
+                    <div>
+                        <span id=try>try</span>
+                        <span class="braces">{</span>
+                        <span id="ryan">Ryan</span>
+                        <span id="online"> online<span id="bang">!</span></span>
+                        <span class="braces">}</span>
+                    </div>
                 </h1>
+
                 <div id="menu">
                     <button class="icon-container" id="share-button">
-                        <span class="material-symbols-rounded">
+                        <span class="material-symbols-outlined">
                             share
                         </span>
                         <span class="icon-desc">COPY LINK</span>
                     </button>
+
+                    <div class="tooltip">
+                        <button class="icon-container">
+                            <span class="material-symbols-outlined">
+                                info
+                            </span>
+                            <span class="icon-desc">v0.1.1</span>
+                        </button>
+                        <span class="tooltip-text">Powered by Ryan v0.1.1</span>
+                    </div>
+
                 </div>
             </header>
             <div id="editors">
-                <div id="editor-area"></div>
-                <div id="display-area"></div>
+                <div class="column">
+                    <div class="header">File ~/main.ryan</div>
+                    <div class="editor" id="editor-area"></div>
+                </div>
+                <div class="column">
+                    <div class="header">JSON Output</div>
+                    <div class="editor" id="display-area"></div>
+                </div>
             </div>
         </div>
         <script src="./main.js"></script>

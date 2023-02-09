@@ -5,3 +5,6 @@ build:
 
 webpack:
 	npx webpack --mode=development
+
+serve:
+	npx http-server dist/
