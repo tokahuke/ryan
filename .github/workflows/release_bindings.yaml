@@ -18,6 +18,25 @@ jobs:
         run: |
           cd ryan-python
           make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
+  "CLI from cargo install":
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+
+      - name: Cargo login
+        run: |
+          echo {{ secrets.CRATES_IO_TOKEN }} | cargo login
+      
+      - name: Cargo Publish
+        run: |
+          cargo publish -p ryan-cli
+      
   # "WASM for web":
   #   runs-on: ubuntu-latest
   #   permissions: write-all
