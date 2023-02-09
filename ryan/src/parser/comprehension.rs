@@ -203,7 +203,9 @@ impl DictComprehension {
 
         for pair in pairs {
             match pair.as_rule() {
-                Rule::keyValueClause => key_value_clause = Some(KeyValueClause::parse(logger, pair.into_inner())),
+                Rule::keyValueClause => {
+                    key_value_clause = Some(KeyValueClause::parse(logger, pair.into_inner()))
+                }
                 Rule::forClause => for_clauses.push(ForClause::parse(logger, pair.into_inner())),
                 Rule::ifGuard => if_guard = Some(IfGuard::parse(logger, pair.into_inner())),
                 _ => unreachable!(),
@@ -211,7 +213,8 @@ impl DictComprehension {
         }
 
         DictComprehension {
-            key_value_clause: key_value_clause.expect("there is always an expression in a list comprehension"),
+            key_value_clause: key_value_clause
+                .expect("there is always an expression in a list comprehension"),
             for_clauses,
             if_guard,
         }
@@ -304,7 +307,7 @@ impl DictComprehension {
                         Some(Some((key, value))) => {
                             iterated.insert(key, value);
                         }
-                        Some(None) => {},
+                        Some(None) => {}
                         None => return None,
                     }
                 }

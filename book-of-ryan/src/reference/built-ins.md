@@ -99,4 +99,12 @@
         <td><code>replace [find: text, subst: text]</code></td>
         <td>Returns a pattern that substitutes all occurrences of the text <code>find</code> with the text <code>subst</code>. Use it like so: <code>( replace [ "five", "four" ] ) "There are five lights" </code> = <code>"There are four lights"</code></td>
     </tr>
+    <tr>
+        <td><code>parse_int x: text</code></td>
+        <td>Parses some text as int, e.g<code>parse_int "123"</code> = <code>123</code>. This raises an error if the text is not a valid integer.</td>
+    </tr>
+    <tr>
+        <td><code>parse_float x: text</code></td>
+        <td>Parses some text as float, e.g<code>parse_float "123"</code> = <code>123.0</code>. This raises an error if the text is not a valid float.</td>
+    </tr>
 </table>

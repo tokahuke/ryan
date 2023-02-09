@@ -14,7 +14,6 @@
 - Predicate types.
 - Dynamic keys in dicts.
 - Split mode.
-- Import CSV.
 - Support for more output formats.
 - `value_from` functions.
 - multiple loops in comprehensions.

@@ -1,4 +1,10 @@
 
+![https://crates.io/crates/ryan](https://img.shields.io/crates/v/ryan)
+![https://pypi.org/project/ryan-lang/](https://img.shields.io/pypi/v/ryan-lang)
+![https://www.npmjs.com/package/ryan-lang-web](https://img.shields.io/npm/v/ryan-lang-web)
+![https://docs.rs/ryan](https://img.shields.io/docsrs/ryan)
+![](https://img.shields.io/crates/l/ryan)
+
 # Ryan: a configuration language for the practical programmer
 <p align="center">
 <img
@@ -21,13 +27,14 @@ should be stored in a file or in an environment variable? Why not declare a huge
 configuration file with everything in it? You leave the users to decide where the
 values are coming from, giving them a versatile interface while keeping things simple
 on your side. Ryan makes that bridge while keeping the user's code short and
-maintanable.
+maintainable.
 </p>
 
 
 ## Resources for Ryan
 
-* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/) _(WIP. New episodes every week!)_.
+* [The Book of Ryan](https://tokahuke.github.io/book-of-ryan/).
+* [Announcing Ryan](https://medium.com/@tokahuke/announcing-ryan-1c95612f494a).
 * [Syntax highlighting for VSCode](https://marketplace.visualstudio.com/items?itemName=PedroBArruda.ryan-syntax-highlighting).
 * [Try out Ryan in your browser](https://tokahuke.github.io/ryan-online/).
 
@@ -91,10 +98,10 @@ can do so only in pre-approved ways. This is done in such a way that every Ryan
 program is guaranteed to finish executing (eventually).
 3. **Immutability**: everything in Ryan is immutable. Once a value is declared, it
 stays that way for the remaining of its existence. Of course, you can _shadow_ a
-variable by redeclaring it with anouther value, but that will be a completely new
+variable by re-declaring it with another value, but that will be a completely new
 variable.
 
 Of course, one can reconfigure the import system to read from any arbitrary source of
 information and can also create _native extensions_ to throw all these guarantees out
-of the window. The possibilitities are infinte. However, these are the sane defaults
+of the window. The possibilities are infinite. However, these are the sane defaults
 that are offered out-of-the-box.

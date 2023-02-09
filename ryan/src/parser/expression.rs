@@ -6,9 +6,9 @@ use std::{cell::RefCell, collections::HashMap, fmt::Display, rc::Rc};
 
 use crate::{rc_world, utils::QuotedStr};
 
-use super::{ErrorLogger, comprehension::DictComprehension};
 use super::Rule;
 use super::State;
+use super::{comprehension::DictComprehension, ErrorLogger};
 use super::{comprehension::ListComprehension, operation::BinaryOperator};
 use super::{import::Import, operation::BinaryOperation};
 use super::{
