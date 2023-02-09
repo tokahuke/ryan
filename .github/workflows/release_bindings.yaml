@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  "python":
+  python:
     runs-on: ubuntu-latest
     permissions: write-all
     concurrency:
@@ -19,7 +19,7 @@ jobs:
           cd ryan-python
           make user=tokahuke password=${{ secrets.PYPI_PASSWORD }} publish
   
-  "cargo-install":
+  cargo-install:
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v2
@@ -38,19 +38,19 @@ jobs:
         run: |
           cargo publish -p ryan-cli
   
-  "javascript-web":
+  javascript-web:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
       - uses: actions/checkout@v2
 
       - name: Install rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        profile: minimal
-        override: true
-        target: wasm32-unknown-unknown
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+          target: wasm32-unknown-unknown
   
       - name: Install wasm-pack
         run: |
