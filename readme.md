@@ -2,6 +2,7 @@
 [![Crates.io](https://img.shields.io/crates/v/ryan)](https://crates.io/crates/ryan)
 [![PyPI](https://img.shields.io/pypi/v/ryan-lang)](https://pypi.org/project/ryan-lang/)
 [![NPM](https://img.shields.io/npm/v/ryan-lang-web)](https://www.npmjs.com/package/ryan-lang-web)
+
 [![Docs.rs](https://img.shields.io/docsrs/ryan)](https://docs.rs/ryan)
 ![Ryan license](https://img.shields.io/crates/l/ryan)
 
