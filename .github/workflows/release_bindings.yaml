@@ -32,7 +32,7 @@ jobs:
 
       - name: Cargo login
         run: |
-          echo {{ secrets.CRATES_IO_TOKEN }} | cargo login
+          echo ${{ secrets.CRATES_IO_TOKEN }} | cargo login
       
       - name: Cargo Publish
         run: |
