@@ -3,7 +3,7 @@ name: Publish Bindings to different programming languages
 on:
   push:
     tags:
-      - "bindings-v*"
+      - "v*"
 
 jobs:
   "Python":
