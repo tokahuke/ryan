@@ -23,6 +23,10 @@
                 width: 50%;
                 height: 100%;
             }
+            #editors .short.column {
+                width: 15%;
+                height: 100%;
+            }
             #editors .editor {
                 width: 100%;
                 height: 100%;
@@ -58,6 +62,9 @@
                 margin-left: auto;
                 padding-right: 1em;
                 display: flex;
+                padding-top: 1em;
+                padding-bottom: 0.5em;
+                min-height: 60px;
             }
             .icon-container {
                 display: inline-flex;
@@ -66,10 +73,11 @@
                 color: #f92672;
                 border: none;
                 cursor: pointer;
-                min-width: 60px;
+                min-width: 64px;
+                transition: color, 0.3s;
             }
             .icon-container:hover {
-                color: #f92672;
+                color: #65d6ec;
             }
             .icon-desc {
                 font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
@@ -132,13 +140,22 @@
             .tooltip:hover .tooltip-text {
                 visibility: visible;
             }
+
+            .hidden {
+                display: none;
+                visibility: hidden;
+            }
         </style>
     </head>
     <body>
         <div id="page-container">
             <header>
                 <h1>
-                    <img src="./mascot.png" height="36px" style="margin-right: 0.5em; border-radius: 50%;"/>
+                    <img
+                        src="./mascot.png"
+                        height="36px"
+                        style="margin-right: 0.5em; border-radius: 50%;"
+                    />
                     <div>
                         <span id=try>try</span>
                         <span class="braces">{</span>
@@ -149,12 +166,36 @@
                 </h1>
 
                 <div id="menu">
+                    <div id="auto-run">
+                        <button class="icon-container hidden" id="auto-run-set">
+                            <span class="material-symbols-outlined">
+                                play_arrow
+                            </span>
+                            <span class="icon-desc">AUTO RUN <br/> MODE</span>
+                        </button>
+                        <button class="icon-container hidden" id="auto-run-unset">
+                            <span class="material-symbols-outlined">
+                                play_disabled
+                            </span>
+                            <span class="icon-desc">CTRL+ENTER <br> TO RUN</span>
+                        </button>
+                    </div>
+
                     <button class="icon-container" id="share-button">
                         <span class="material-symbols-outlined">
                             share
                         </span>
                         <span class="icon-desc">COPY LINK</span>
                     </button>
+
+                    <a href="https://tokahuke.github.io/book-of-ryan" target="_blank">
+                    <button class="icon-container">
+                        <span class="material-symbols-outlined">
+                            support
+                        </span>
+                        <span class="icon-desc">DOCS</span>
+                    </button>
+                    </a>
 
                     <div class="tooltip">
                         <button class="icon-container">
@@ -169,6 +210,9 @@
                 </div>
             </header>
             <div id="editors">
+                <!-- <div class="column short">
+                    <div class="header">Workspace</div>
+                </div> -->
                 <div class="column">
                     <div class="header">File ~/main.ryan</div>
                     <div class="editor" id="editor-area"></div>
