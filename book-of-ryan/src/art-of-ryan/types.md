@@ -92,6 +92,6 @@ As you can expect, types have no equivalent in JSON. Therefore, even though type
 ```ryan
 type X = int;
 {
-    a_type: X,      // -> Unrepresentable value: int
+    a_type: X,      // -> Un-representable value: int
 }
 ```

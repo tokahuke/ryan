@@ -1,11 +1,5 @@
-- Book of Ryan.
-- Python and JS bindings, for starters.
-- Publish Python and JS bindings.
-
 --- v0.1.1
 
-- Dict comprehension.
-- More built-ins.
 - Make operations short-circuiting.
 - Forgiving numbers.
 

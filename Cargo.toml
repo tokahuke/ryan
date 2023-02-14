@@ -7,3 +7,7 @@ members = ["ryan", "ryan-cli", "ryan-python", "ryan-web", "ryan-js"]
 inherits = "release"
 debug = true
 split-debuginfo = "packed"
+
+[profile.release]
+# This is for WASM. However... it's a pretty dencent default.
+opt-level = "s"

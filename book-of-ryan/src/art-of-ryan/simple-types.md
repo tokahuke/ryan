@@ -2,7 +2,7 @@
 
 ## Numbers
 
-The simplest type you can think about in Ryan is a number. Numbers come in two flavors: _integers_ and _floats_. Both types are treated diffently, although interchangibly via type coercion (more on that later). Here are some examples of numbers:
+The simplest type you can think about in Ryan is a number. Numbers come in two flavors: _integers_ and _floats_. Both types are treated differently, although interchangeably via type coercion (more on that later). Here are some examples of numbers:
 ```ryan
 123     // an integer
 1.23    // a float
@@ -10,8 +10,9 @@ The simplest type you can think about in Ryan is a number. Numbers come in two f
 -12     // integers can be negative too
 1e23    // and floats can be written in scientific notation if they are veery big
 1e-42   // ... and also if they are veeery tiny
+1_000.0 // if a number is very big, you can sprinkle `_` around for readability.
 ```
-If you know other programming languages, this is most probably identical to what you have encoutered before. 
+If you know other programming languages, this is most probably identical to what you have encountered before. 
 
 In Ryan, you can write arbitrary numerical expressions mixing and matching floats and integers. When necessary, Ryan will implicitly convert the integer to the corresponding float. This is called type coercion. Here are some example of what you can do:
 ```ryan
@@ -92,7 +93,7 @@ The `fmt`... thingy... takes any value in Ryan and produces a string representat
 
 ## `null`
 
-Lastly, but not least, there is the simplest type of all: null. Null has only one value: `null` and represents the abscence of something. Null is not a boolean or an integer, so it will not behave like, say `false` or `0`. Therefore, all these won't work:
+Lastly, but not least, there is the simplest type of all: null. Null has only one value: `null` and represents the absence of something. Null is not a boolean or an integer, so it will not behave like, say `false` or `0`. Therefore, all these won't work:
 ```ryan
 1 + null                                // error!
 if null then "wrong" else "wronger"     // error!

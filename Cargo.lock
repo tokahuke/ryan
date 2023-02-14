@@ -493,22 +493,7 @@ dependencies = [
 
 [[package]]
 name = "ryan"
-version = "0.1.1"
-dependencies = [
- "lazy_static",
- "pest",
- "pest_derive",
- "serde",
- "serde_json",
- "snailquote",
- "thiserror",
-]
-
-[[package]]
-name = "ryan"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f040474cb9e392f84c5414862c5e046a9e0c31e8664261ab04d1d4e6c72531b7"
+version = "0.1.2"
 dependencies = [
  "lazy_static",
  "pest",
@@ -521,12 +506,12 @@ dependencies = [
 
 [[package]]
 name = "ryan-cli"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "atty",
  "clap",
- "ryan 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryan",
  "serde_json",
  "termcolor",
  "termcolor-json",
@@ -534,11 +519,11 @@ dependencies = [
 
 [[package]]
 name = "ryan-lang"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
- "ryan 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryan",
  "thiserror",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -547,11 +532,11 @@ dependencies = [
 
 [[package]]
 name = "ryan-lang-web"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
- "ryan 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryan",
  "thiserror",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -560,10 +545,10 @@ dependencies = [
 
 [[package]]
 name = "ryan-python"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "pyo3",
- "ryan 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryan",
 ]
 
 [[package]]

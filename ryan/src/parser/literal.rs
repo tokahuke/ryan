@@ -55,10 +55,12 @@ impl Literal {
             Rule::number => logger.absorb(
                 &pair,
                 pair.as_str()
+                    .replace('_', "")
                     .parse::<i64>()
                     .map(|int| Literal::Integer(int))
                     .or_else(|_| {
                         pair.as_str()
+                            .replace('_', "")
                             .parse::<f64>()
                             .map(|float| Literal::Float(float))
                     }),

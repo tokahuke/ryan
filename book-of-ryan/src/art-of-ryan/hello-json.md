@@ -36,6 +36,7 @@ On the same note, much stuff that you are used to have from JavaScript you can a
 [
     "forgiving",
     "commas", 
+    1_000.0,    // Forgiving numbers!
 ]
 ```
 and

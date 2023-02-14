@@ -67,8 +67,8 @@ impl Display for BinaryOperator {
             Self::Plus => write!(f, "+")?,
             Self::Minus => write!(f, "-")?,
             Self::Times => write!(f, "*")?,
-            Self::Divided => write!(f, "*")?,
-            Self::Remainder => write!(f, "*")?,
+            Self::Divided => write!(f, "/")?,
+            Self::Remainder => write!(f, "%")?,
             Self::Default => write!(f, "?")?,
             Self::Juxtaposition => {}
         }
@@ -210,8 +210,16 @@ impl Display for BinaryOperation {
 impl BinaryOperation {
     pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
         let left = self.left.eval(state)?;
-        let right = self.right.eval(state)?;
 
+        // These are short-circuiting operations...
+        let left = match (left, self.op) {
+            (Value::Bool(true), BinaryOperator::Or) => return Some(Value::Bool(true)),
+            (Value::Bool(false), BinaryOperator::And) => return Some(Value::Bool(false)),
+            (left, BinaryOperator::Default) if left != Value::Null => return Some(left),
+            (left, _) => left, // not short-circuiting... carry on!
+        };
+
+        let right = self.right.eval(state)?;
         let result = match (left, self.op, right) {
             (Value::PatternMatches(id, pats), BinaryOperator::Juxtaposition, arg) => {
                 state.push_ctx(Context::SubstitutingPattern(Some(id)));
