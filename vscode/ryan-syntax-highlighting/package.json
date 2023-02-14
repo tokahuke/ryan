@@ -8,7 +8,8 @@
     "url": "https://github.com/tokahuke/ryan"
   },
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "icon": "mascot.jpg",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -16,16 +17,26 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "ryan",
-      "aliases": ["Ryan", "ryan"],
-      "extensions": [".ryan",".ryans"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "ryan",
-      "scopeName": "source.ryan",
-      "path": "./syntaxes/ryan.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "ryan",
+        "aliases": [
+          "Ryan",
+          "ryan"
+        ],
+        "extensions": [
+          ".ryan",
+          ".ryans"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ryan",
+        "scopeName": "source.ryan",
+        "path": "./syntaxes/ryan.tmLanguage.json"
+      }
+    ]
   }
 }
