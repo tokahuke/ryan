@@ -1,228 +1,232 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Try Ryan online</title>
-        <link rel="icon" type="image/jpeg" href="./mascot.png"/>
-        
-        <!-- Material icons 'n stuff -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        
-        <!-- My stuff... -->
-        <style>
-            #page-container {
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-            }
+  <head>
+    <title>Try Ryan online</title>
+    <link rel="icon" type="image/jpeg" href="./mascot.png" />
 
-            #editors {
-                display: flex;
-                height: 100%;
-            }
-            #editors .column {
-                width: 50%;
-                height: 100%;
-            }
-            #editors .short.column {
-                width: 15%;
-                height: 100%;
-            }
-            #editors .editor {
-                width: 100%;
-                height: 100%;
-            }
-            #editors .header {
-                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
-                    'source-code-pro', monospace;
-                font-size: 8pt;
-                font-weight: lighter;
-                padding-left: 1em;
-                padding-top: 1em;
-                padding-bottom: 0.5em;
-                background-color: #2f3129;
-                color: #8f908a;
-            }
+    <!-- Material icons 'n stuff -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
 
-            body {
-                color: #f8f8f2;
-                background-color: #131411;
-            }
-            html, body {
-                margin: 0;
-                padding: 0;
-            }
+    <!-- My stuff... -->
+    <style>
+      #page-container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-            header {
-                display: flex;
-                align-items: center;
-                box-shadow: 2px 2px 2px 2px #131411;
-                z-index: 1;
-            }
-            #menu {
-                margin-left: auto;
-                padding-right: 1em;
-                display: flex;
-                padding-top: 1em;
-                padding-bottom: 0.5em;
-                min-height: 60px;
-            }
-            .icon-container {
-                display: inline-flex;
-                flex-direction: column;
-                background-color: transparent;
-                color: #f92672;
-                border: none;
-                cursor: pointer;
-                min-width: 64px;
-                transition: color, 0.3s;
-            }
-            .icon-container:hover {
-                color: #65d6ec;
-            }
-            .icon-desc {
-                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
-                    'source-code-pro', monospace;
-                font-size: xx-small;
-                font-weight: bolder;
-                margin-top: 4px;
-            }
-            h1 {
-                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
-                    'source-code-pro', monospace;
-                font-style: italic;
-                margin: 0;
-                padding-left: 0.75em;
-                padding-top: 0.5em;
-                padding-bottom: 0.5em;
-                display: flex;
-                align-items: center;
-            }
-            h1 #try {
-                color: #65d6ec;
-            }
-            h1 #ryan {
-                color: #f92672;
-                font-style: normal;
-            }
-            h1 #online {
-                font-weight: bold;
-                font-style: italic;
-                text-decoration: underline;
-            }
-            h1 #bang {
-                font-style: italic;
-                text-decoration: underline;
-            }
-            h1 .braces {
-                font-style: normal;
-            }
+      #editors {
+        display: flex;
+        height: 100%;
+      }
+      #editors .column {
+        width: 50%;
+        height: 100%;
+      }
+      #editors .short.column {
+        width: 15%;
+        height: 100%;
+      }
+      #editors .editor {
+        width: 100%;
+        height: 100%;
+      }
+      #editors .header {
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas",
+          "source-code-pro", monospace;
+        font-size: 8pt;
+        font-weight: lighter;
+        padding-left: 1em;
+        padding-top: 1em;
+        padding-bottom: 0.5em;
+        background-color: #2f3129;
+        color: #8f908a;
+      }
 
-            .tooltip {
-                position: relative;
-            }
-            .tooltip .tooltip-text {
-                visibility: hidden;
-                position: absolute;
-                top: 120%;
-                left: -160%;
-                background-color: #101010;
-                padding: 12px 18px;
-                border-radius: 15px;
-                border-top-right-radius: 0;
-                box-shadow: 2px 2px 4px black;
+      body {
+        color: #f8f8f2;
+        background-color: #131411;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-                font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas',
-                    'source-code-pro', monospace;
-                font-size: 8px;
-                color: #e6e6e0;
+      header {
+        display: flex;
+        align-items: center;
+        box-shadow: 2px 2px 2px 2px #131411;
+        z-index: 1;
+      }
+      #menu {
+        margin-left: auto;
+        padding-right: 1em;
+        display: flex;
+        padding-top: 1em;
+        padding-bottom: 0.5em;
+        min-height: 60px;
+      }
+      .icon-container {
+        display: inline-flex;
+        flex-direction: column;
+        background-color: transparent;
+        color: #f92672;
+        border: none;
+        cursor: pointer;
+        min-width: 64px;
+        transition: color, 0.3s;
+      }
+      .icon-container:hover {
+        color: #65d6ec;
+      }
+      .icon-desc {
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas",
+          "source-code-pro", monospace;
+        font-size: xx-small;
+        font-weight: bolder;
+        margin-top: 4px;
+      }
+      h1 {
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas",
+          "source-code-pro", monospace;
+        font-style: italic;
+        margin: 0;
+        padding-left: 0.75em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        display: flex;
+        align-items: center;
+      }
+      h1 #try {
+        color: #65d6ec;
+      }
+      h1 #ryan {
+        color: #f92672;
+        font-style: normal;
+      }
+      h1 #online {
+        font-weight: bold;
+        font-style: italic;
+        text-decoration: underline;
+      }
+      h1 #bang {
+        font-style: italic;
+        text-decoration: underline;
+      }
+      h1 .braces {
+        font-style: normal;
+      }
 
-            }
-            .tooltip:hover .tooltip-text {
-                visibility: visible;
-            }
+      .tooltip {
+        position: relative;
+      }
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        position: absolute;
+        top: 120%;
+        left: -200%;
+        background-color: #101010;
+        padding: 12px 18px;
+        border-radius: 15px;
+        border-top-right-radius: 0;
+        box-shadow: 2px 2px 4px black;
 
-            .hidden {
-                display: none;
-                visibility: hidden;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="page-container">
-            <header>
-                <h1>
-                    <img
-                        src="./mascot.png"
-                        height="36px"
-                        style="margin-right: 0.5em; border-radius: 50%;"
-                    />
-                    <div>
-                        <span id=try>try</span>
-                        <span class="braces">{</span>
-                        <span id="ryan">Ryan</span>
-                        <span id="online"> online<span id="bang">!</span></span>
-                        <span class="braces">}</span>
-                    </div>
-                </h1>
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas",
+          "source-code-pro", monospace;
+        font-size: 8px;
+        color: #e6e6e0;
+      }
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+      }
 
-                <div id="menu">
-                    <div id="auto-run">
-                        <button class="icon-container hidden" id="auto-run-set">
-                            <span class="material-symbols-outlined">
-                                play_arrow
-                            </span>
-                            <span class="icon-desc">AUTO RUN <br/> MODE</span>
-                        </button>
-                        <button class="icon-container hidden" id="auto-run-unset">
-                            <span class="material-symbols-outlined">
-                                play_disabled
-                            </span>
-                            <span class="icon-desc">CTRL+ENTER <br> TO RUN</span>
-                        </button>
-                    </div>
+      .hidden {
+        display: none;
+        visibility: hidden;
+      }
+      button.hidden {
+        color: #65d6ec;
+        transition: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page-container">
+      <header>
+        <h1>
+          <img
+            src="./mascot.png"
+            height="36px"
+            style="margin-right: 0.5em; border-radius: 50%"
+          />
+          <div>
+            <span id="try">try</span>
+            <span class="braces">{</span>
+            <span id="ryan">Ryan</span>
+            <span id="online"> online<span id="bang">!</span></span>
+            <span class="braces">}</span>
+          </div>
+        </h1>
 
-                    <button class="icon-container" id="share-button">
-                        <span class="material-symbols-outlined">
-                            share
-                        </span>
-                        <span class="icon-desc">COPY LINK</span>
-                    </button>
+        <div id="menu">
+          <div id="auto-run">
+            <button class="icon-container hidden" id="auto-run-set">
+              <span class="material-symbols-outlined"> play_arrow </span>
+              <span class="icon-desc"
+                >AUTO RUN <br />
+                MODE</span
+              >
+            </button>
+            <button class="icon-container hidden" id="auto-run-unset">
+              <span class="material-symbols-outlined"> play_disabled </span>
+              <span class="icon-desc"
+                >CTRL+ENTER <br />
+                TO RUN</span
+              >
+            </button>
+          </div>
 
-                    <a href="https://tokahuke.github.io/book-of-ryan" target="_blank">
-                    <button class="icon-container">
-                        <span class="material-symbols-outlined">
-                            support
-                        </span>
-                        <span class="icon-desc">DOCS</span>
-                    </button>
-                    </a>
+          <button class="icon-container" id="share-button">
+            <span class="material-symbols-outlined"> share </span>
+            <span class="icon-desc">COPY LINK</span>
+          </button>
 
-                    <div class="tooltip">
-                        <button class="icon-container">
-                            <span class="material-symbols-outlined">
-                                info
-                            </span>
-                            <span class="icon-desc">v0.1.1</span>
-                        </button>
-                        <span class="tooltip-text">Powered by Ryan v0.1.1</span>
-                    </div>
+          <a href="https://tokahuke.github.io/book-of-ryan" target="_blank">
+            <button class="icon-container">
+              <span class="material-symbols-outlined"> support </span>
+              <span class="icon-desc">DOCS</span>
+            </button>
+          </a>
 
-                </div>
-            </header>
-            <div id="editors">
-                <!-- <div class="column short">
+          <div class="tooltip">
+            <button class="icon-container">
+              <span class="material-symbols-outlined"> info </span>
+              <span class="icon-desc">v0.1.1</span>
+            </button>
+            <span class="tooltip-text"
+              >Powered by Ryan v0.1.1@<span class="git-hash"></span
+            ></span>
+          </div>
+        </div>
+      </header>
+      <div id="editors">
+        <!-- <div class="column short">
                     <div class="header">Workspace</div>
                 </div> -->
-                <div class="column">
-                    <div class="header">File ~/main.ryan</div>
-                    <div class="editor" id="editor-area"></div>
-                </div>
-                <div class="column">
-                    <div class="header">JSON Output</div>
-                    <div class="editor" id="display-area"></div>
-                </div>
-            </div>
+        <div class="column">
+          <div class="header">File ~/main.ryan</div>
+          <div class="editor" id="editor-area"></div>
         </div>
-        <script src="./main.js"></script>
-    </body>
+        <div class="column">
+          <div class="header">JSON Output</div>
+          <div class="editor" id="display-area"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./main.js"></script>
+  </body>
 </html>
