@@ -339,9 +339,11 @@ impl DictItem {
             }
         }
 
+        let key = key.expect("there is always a key in dict item");
+
         DictItem {
-            key: key.expect("there is always a key in dict item"),
-            value: value.expect("there is always a value in dict item"),
+            value: value.unwrap_or_else(|| Expression::Literal(Literal::Identifier(key.clone()))),
+            key,
             guard,
         }
     }

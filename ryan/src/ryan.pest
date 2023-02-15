@@ -71,7 +71,7 @@ term = _{
     list = { "[" ~ (
         expression ~ ("," ~ expression )* ~ ","?
     )? ~ "]" }
-    dictItem = { (text | identifier) ~ ":" ~ expression ~ ifGuard? }
+    dictItem = { (text | identifier) ~ (":" ~ expression)? ~ ifGuard? }
     dict = { "{" ~ (
         dictItem ~ ("," ~ dictItem)* ~ ","?
     )? ~ "}" }
