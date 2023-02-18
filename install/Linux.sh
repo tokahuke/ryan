@@ -14,7 +14,7 @@ export LATEST=$(
 
 cd /usr/local/bin
 curl -L -Ss "https://github.com/tokahuke/ryan/releases/download/$LATEST/ryan-$LATEST-$TARGET.tar.xz" \
-    | tar OJxf - ryan-$LATEST-$TARGET/ryan > ./ryan
+    | tar -OJxf - ryan-$LATEST-$TARGET/ryan > ./ryan
 chmod +x ryan
 
 
