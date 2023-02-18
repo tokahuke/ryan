@@ -17,11 +17,11 @@ path = "src/main.rs"
 doc = false
 
 [dependencies]
-anyhow = "1.0.68"
+anyhow = "1.0.69"
 atty = "0.2.14"
-clap = { version = "4.1.4", features = ["derive"] }
+clap = { version = "4.1.6", features = ["derive"] }
 # ryan = "0.1.2"
 ryan = { path = "../ryan" }
-serde_json = "1.0.91"
+serde_json = "1.0.93"
 termcolor = "1.2.0"
 termcolor-json = "1.0.0"
