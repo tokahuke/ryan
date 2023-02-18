@@ -39,6 +39,8 @@ pub enum Type {
     StrictRecord(HashMap<String, Type>),
     /// A value that can be of any of the values in a list.
     Or(Vec<Type>),
+    /// A type which cannot be inspected. This variant cannot be created directly from Ryan code.
+    Opaque(String),
 }
 
 impl Display for Type {
@@ -84,6 +86,7 @@ impl Display for Type {
                     write!(f, " | {item}")?;
                 }
             }
+            Self::Opaque(typ) => write!(f, "![type {typ}]")?,
         }
 
         Ok(())
@@ -355,7 +358,7 @@ impl TypeItem {
             match pair.as_rule() {
                 Rule::identifier => identifier = Some(pair.as_str().to_owned()),
                 Rule::text => {
-                    identifier = Some(logger.absorb(&pair, snailquote::unescape(pair.as_str())))
+                    identifier = Some(logger.absorb(&pair, crate::utils::unescape(pair.as_str())))
                 }
                 Rule::typeExpression => {
                     r#type = Some(TypeExpression::parse(logger, pair.into_inner()))

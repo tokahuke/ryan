@@ -83,7 +83,7 @@ impl Import {
             match pair.as_rule() {
                 Rule::text => {
                     path = Some(rc_world::string_to_rc(
-                        logger.absorb(&pair, snailquote::unescape(pair.as_str())),
+                        logger.absorb(&pair, crate::utils::unescape(pair.as_str())),
                     ))
                 }
                 Rule::importFormatText => format = Some(Format::Text),

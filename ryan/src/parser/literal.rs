@@ -70,7 +70,9 @@ impl Literal {
                 "false" => Literal::Bool(false),
                 _ => unreachable!(),
             },
-            Rule::text => Literal::Text(logger.absorb(&pair, snailquote::unescape(pair.as_str()))),
+            Rule::text => {
+                Literal::Text(logger.absorb(&pair, crate::utils::unescape(pair.as_str())))
+            }
             Rule::identifier => Literal::Identifier(rc_world::str_to_rc(pair.as_str())),
             _ => unreachable!(),
         };

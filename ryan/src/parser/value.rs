@@ -6,6 +6,7 @@ use thiserror::Error;
 
 use crate::environment::NativePatternMatch;
 use crate::utils::QuotedStr;
+use crate::DecodeError;
 
 use super::block::Block;
 use super::literal::Literal;
@@ -244,34 +245,82 @@ impl Value {
         }
     }
 
-    /// Creates the equivalent JSON representation of the current Ryan value, if possible.
-    pub fn to_json(&self) -> Result<serde_json::Value, NotRepresentable> {
-        let json = match self {
-            Self::Null => serde_json::Value::Null,
-            Self::Bool(bool) => serde_json::Value::Bool(*bool),
-            Self::Integer(int) => serde_json::Value::Number((*int).into()),
-            Self::Float(float) => serde_json::Value::Number(
-                serde_json::Number::from_f64(*float).ok_or_else(|| NotRepresentable {
-                    value: Self::Float(*float).to_string(),
-                })?,
-            ),
-            Self::Text(text) => serde_json::Value::String(text.to_string()),
-            Self::List(list) => {
-                serde_json::Value::Array(list.iter().map(Self::to_json).collect::<Result<_, _>>()?)
-            }
-            Self::Map(map) => serde_json::Value::Object(
-                map.iter()
-                    .map(|(key, value)| value.to_json().map(|v| (key.to_string(), v)))
-                    .collect::<Result<_, _>>()?,
-            ),
-            bad => {
-                return Err(NotRepresentable {
-                    value: bad.clone().to_string(),
-                })
-            }
-        };
+    pub fn canonical_type(&self) -> Type {
+        match self {
+            Value::Null => Type::Null,
+            Value::Bool(_) => Type::Bool,
+            Value::Integer(_) => Type::Integer,
+            Value::Float(_) => Type::Float,
+            Value::Text(_) => Type::Text,
+            Value::List(list) => {
+                let types = list.iter().map(Value::canonical_type).collect::<Vec<_>>();
 
-        Ok(json)
+                let mut element_type = None;
+                let mut all_same = true;
+                for typ in &types {
+                    if let Some(el) = element_type {
+                        if el != typ {
+                            all_same = false;
+                            break;
+                        }
+                    } else {
+                        element_type = Some(typ);
+                    }
+                }
+
+                if all_same {
+                    if let Some(typ) = element_type {
+                        Type::List(Box::new(typ.clone()))
+                    } else {
+                        Type::Tuple(vec![])
+                    }
+                } else {
+                    Type::Tuple(types)
+                }
+            }
+            Value::Map(dict) => {
+                let types = dict
+                    .iter()
+                    .map(|(key, value)| (key.to_string(), value.canonical_type()))
+                    .collect::<HashMap<_, _>>();
+
+                let mut element_type = None;
+                let mut all_same = true;
+                for (_, typ) in &types {
+                    if let Some(el) = element_type {
+                        if el != typ {
+                            all_same = false;
+                            break;
+                        }
+                    } else {
+                        element_type = Some(typ);
+                    }
+                }
+
+                if all_same {
+                    if let Some(typ) = element_type {
+                        Type::Dictionary(Box::new(typ.clone()))
+                    } else {
+                        Type::StrictRecord(HashMap::new())
+                    }
+                } else {
+                    Type::StrictRecord(types)
+                }
+            }
+            Value::PatternMatches(_, _) => Type::Opaque("pattern match".to_string()),
+            Value::NativePatternMatch(_) => Type::Opaque("native pattern match".to_string()),
+            Value::Type(_) => Type::Opaque("type".to_string()),
+        }
+    }
+
+    pub fn decode<T>(&self) -> Result<T, DecodeError>
+    where
+        T: for<'a> serde::Deserialize<'a>,
+    {
+        let deserializer = crate::de::RyanDeserializer {
+            value: std::borrow::Cow::Borrowed(self),
+        };
+        T::deserialize(deserializer)
     }
 }
 

@@ -357,7 +357,7 @@ impl MatchDictItem {
                 Rule::pattern => pattern = Some(Pattern::parse(logger, pair.into_inner())),
                 Rule::text => {
                     text = Some(rc_world::string_to_rc(
-                        logger.absorb(&pair, snailquote::unescape(pair.as_str())),
+                        logger.absorb(&pair, crate::utils::unescape(pair.as_str())),
                     ))
                 }
                 Rule::matchIdentifier => {

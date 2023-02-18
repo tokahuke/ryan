@@ -122,6 +122,8 @@
 //! (under construction).
 //!
 
+/// Deserializes a Ryan value into a Rust struct using `serde`'s data model.
+mod de;
 /// The interface between Ryan and the rest of the world. Contains the import system and
 /// the native extension system.
 pub mod environment;
@@ -133,13 +135,14 @@ mod rc_world;
 /// Utilities for this crate.
 mod utils;
 
+pub use crate::de::DecodeError;
 pub use crate::environment::Environment;
 
 use serde::Deserialize;
 use std::{io::Read, path::Path};
 use thiserror::Error;
 
-use crate::parser::{EvalError, NotRepresentable, ParseError};
+use crate::parser::{EvalError, ParseError};
 
 /// The errors that may happen while processing Ryan programs.
 #[derive(Debug, Error)]
@@ -154,11 +157,8 @@ pub enum Error {
     #[error("Evaluation error: {0}")]
     Eval(EvalError),
     /// An error happened when transforming the final result to JSON.
-    #[error("Representation error: {0}")]
-    Representation(NotRepresentable),
-    /// The final JSON does not conform to the expected output type.
-    #[error("Schema error: {0}")]
-    Schema(serde_json::Error),
+    #[error("Decode error: {0}")]
+    DecodeError(DecodeError),
 }
 
 /// Loads a Ryan file from disk and executes it, finally building an instance of type `T`
@@ -241,8 +241,7 @@ where
     let env = Environment::new(None);
     let parsed = parser::parse(&s).map_err(Error::Parse)?;
     let value = parser::eval(env, &parsed).map_err(Error::Eval)?;
-    let json = value.to_json().map_err(Error::Representation)?;
-    let decoded = serde_json::from_value(json).map_err(Error::Schema)?;
+    let decoded = value.decode::<T>().map_err(Error::DecodeError)?;
 
     Ok(decoded)
 }
@@ -257,8 +256,7 @@ where
     let env = Environment::new(Some(name));
     let parsed = parser::parse(&s).map_err(Error::Parse)?;
     let value = parser::eval(env, &parsed).map_err(Error::Eval)?;
-    let json = value.to_json().map_err(Error::Representation)?;
-    let decoded = serde_json::from_value(json).map_err(Error::Schema)?;
+    let decoded = value.decode().map_err(Error::DecodeError)?;
 
     Ok(decoded)
 }
@@ -273,8 +271,7 @@ where
 {
     let parsed = parser::parse(&s).map_err(Error::Parse)?;
     let value = parser::eval(env.clone(), &parsed).map_err(Error::Eval)?;
-    let json = value.to_json().map_err(Error::Representation)?;
-    let decoded = serde_json::from_value(json).map_err(Error::Schema)?;
+    let decoded = value.decode().map_err(Error::DecodeError)?;
 
     Ok(decoded)
 }

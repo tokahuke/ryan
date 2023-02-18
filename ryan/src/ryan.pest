@@ -14,7 +14,11 @@ unsigned = @{
     sign = @{ "+" | "-" }
     number = @{ sign? ~ unsigned }
     bool = @{ "true" | "false" }
-    escaped = @{ !"\"" ~ ("\\\"" | ANY)}
+    escaped = @{ !"\"" ~ ("\\" ~ controlCode | ANY)}
+    // see: https://stackoverflow.com/questions/19176024/
+    controlCode = @{
+        "\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t" | "u" ~ ('0'..'9' | 'a'..'f' | 'A'..'F'){4}
+    }
     text = @{ "\"" ~ escaped* ~ "\"" }
     identifier = @{
         !reserved ~ identifierStr

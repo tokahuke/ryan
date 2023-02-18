@@ -322,7 +322,7 @@ impl DictItem {
                 Rule::identifier => key = Some(rc_world::str_to_rc(pair.as_str())),
                 Rule::text => {
                     key = Some(rc_world::string_to_rc(
-                        logger.absorb(&pair, snailquote::unescape(pair.as_str())),
+                        logger.absorb(&pair, crate::utils::unescape(pair.as_str())),
                     ));
                 }
                 Rule::expression => value = Some(Expression::parse(logger, pair.into_inner())),

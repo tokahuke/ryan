@@ -1,7 +1,12 @@
---- v0.1.1
+--- v0.1.2
 
 - Make operations short-circuiting.
 - Forgiving numbers.
+- Variable key in dict.
+- Get rid of serde_json (make optional dependency).
+- quoting with snailquote is kinda... wrong...
+- Remember insertion order.
+
 
 --- v0.2.0 and beyond
 
