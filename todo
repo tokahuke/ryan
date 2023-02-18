@@ -1,4 +1,4 @@
---- v0.1.2
+--- v0.2.0
 
 - Make operations short-circuiting.
 - Forgiving numbers.
@@ -8,7 +8,7 @@
 - Remember insertion order.
 
 
---- v0.2.0 and beyond
+--- ... beyond!
 
 - Predicate types.
 - Dynamic keys in dicts.

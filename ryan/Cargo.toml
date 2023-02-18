@@ -1,6 +1,6 @@
 [package]
 name = "ryan"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 description = "Ryan: a configuration language for the practical programmer"
@@ -12,7 +12,7 @@ keywords = ["cli", "parser", "json", "serde", "serialization"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-indexmap = "1.9.2"
+indexmap = "1"
 lazy_static = "1"
 pest = "2.5.5"
 pest_derive = "2.5.5"

@@ -9,7 +9,6 @@
 
 # v0.2.0
 
-
 - Make operations short-circuiting: `and`, `or` and `?` don't execute right side if not needed.
 - Forgiving numbers: use `1_000` for large numbers.
 - Variable key in dict: `let x = 1; { x }` works.

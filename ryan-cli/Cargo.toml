@@ -1,6 +1,6 @@
 [package]
 name = "ryan-cli"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 description = "Ryan: a configuration language for the practical programmer"
@@ -20,7 +20,7 @@ doc = false
 anyhow = "1.0.69"
 atty = "0.2.14"
 clap = { version = "4.1.6", features = ["derive"] }
-# ryan = "0.1.2"
+# ryan = "0.2.0"
 ryan = { path = "../ryan" }
 serde_json = "1.0.93"
 termcolor = "1.2.0"

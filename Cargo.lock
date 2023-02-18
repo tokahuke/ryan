@@ -509,7 +509,7 @@ dependencies = [
 
 [[package]]
 name = "ryan"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "indexmap",
  "lazy_static",
@@ -521,7 +521,7 @@ dependencies = [
 
 [[package]]
 name = "ryan-cli"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "atty",
@@ -534,7 +534,7 @@ dependencies = [
 
 [[package]]
 name = "ryan-lang"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "ryan-lang-web"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -560,7 +560,7 @@ dependencies = [
 
 [[package]]
 name = "ryan-python"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "pyo3",
  "ryan",
