@@ -20,5 +20,5 @@ crate-type = ["staticlib"]
 
 [dependencies]
 pyo3 = { version = "0.18.1", features = ["extension-module"] }
-# ryan = "0.2.0"
-ryan = { path = "../ryan" }
+ryan = "0.2.0"
+# ryan = { path = "../ryan" }
