@@ -1,8 +1,9 @@
+use indexmap::IndexMap;
 use pest::{
     iterators::Pairs,
     pratt_parser::{Op, PrattParser},
 };
-use std::{cell::RefCell, collections::HashMap, fmt::Display, rc::Rc};
+use std::{cell::RefCell, fmt::Display, rc::Rc};
 
 use crate::{rc_world, utils::QuotedStr};
 
@@ -181,7 +182,7 @@ impl Expression {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         match self {
             Self::List(list) => {
@@ -231,7 +232,7 @@ impl Expression {
                     .collect::<Option<Vec<_>>>()?,
             )),
             Self::Dict(dict) => Value::Map(Rc::new({
-                let mut evald = HashMap::new();
+                let mut evald = IndexMap::new();
                 for item in &dict.items {
                     if let Some(g) = &item.guard {
                         let tested = g.eval(state)?.is_true();

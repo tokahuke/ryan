@@ -1,6 +1,7 @@
+use indexmap::IndexMap;
 use pest::iterators::Pairs;
 use std::fmt::Display;
-use std::{collections::HashMap, rc::Rc};
+use std::rc::Rc;
 
 use crate::rc_world;
 
@@ -156,7 +157,7 @@ impl Binding {
         &self,
         state: &mut State<'_>,
         provided: &mut Vec<Rc<str>>,
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         match self {
             Self::PatternMatchDefinition {
@@ -198,7 +199,7 @@ impl Binding {
                 let mut provided = vec![];
                 pattern.provided(&mut provided);
 
-                let mut captured = HashMap::default();
+                let mut captured = IndexMap::default();
                 block.capture(state, &mut provided, &mut captured)?;
 
                 if let Some(Value::PatternMatches(_, mut matches)) =
@@ -233,7 +234,7 @@ impl Binding {
             }
             Self::Destructuring { pattern, block } => {
                 let evaluated = block.eval(state)?;
-                let mut new_bindings = HashMap::default();
+                let mut new_bindings = IndexMap::default();
 
                 if let Err(err) = pattern.bind(&evaluated, &mut new_bindings, state)? {
                     state.raise(format!("{err}"))?;

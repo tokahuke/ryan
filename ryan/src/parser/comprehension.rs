@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::rc::Rc;
 
+use indexmap::IndexMap;
 use pest::iterators::Pairs;
 
 use super::{expression::Expression, ErrorLogger};
@@ -66,7 +66,7 @@ impl ListComprehension {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         self.expression.capture(state, provided, values)?;
 
@@ -89,7 +89,7 @@ impl ListComprehension {
         arg: Value,
         state: &mut State<'_>,
     ) -> Option<Option<Value>> {
-        let mut new_bindings = HashMap::default();
+        let mut new_bindings = IndexMap::default();
         if for_pattern.bind(&arg, &mut new_bindings, state).is_none() {
             return Some(None);
         }
@@ -225,7 +225,7 @@ impl DictComprehension {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         self.key_value_clause.capture(state, provided, values)?;
 
@@ -248,7 +248,7 @@ impl DictComprehension {
         arg: Value,
         state: &mut State<'_>,
     ) -> Option<Option<(Rc<str>, Value)>> {
-        let mut new_bindings = HashMap::default();
+        let mut new_bindings = IndexMap::default();
         if for_pattern.bind(&arg, &mut new_bindings, state).is_none() {
             return Some(None);
         }
@@ -300,7 +300,7 @@ impl DictComprehension {
         let iterable = self.for_clauses[0].expression.eval(state)?;
         let iterated = match iterable.iter() {
             Ok(iter) => Value::Map({
-                let mut iterated = HashMap::new();
+                let mut iterated = IndexMap::new();
 
                 for item in iter {
                     match self.run_iter(&self.for_clauses[0].pattern, item, state) {
@@ -354,7 +354,7 @@ impl ForClause {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         self.expression.capture(state, provided, values)
     }
@@ -397,7 +397,7 @@ impl KeyValueClause {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         self.key.capture(state, provided, values)?;
         self.value.capture(state, provided, values)?;
@@ -438,7 +438,7 @@ impl IfGuard {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         self.predicate.capture(state, provided, values)
     }

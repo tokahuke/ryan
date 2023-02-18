@@ -1,5 +1,5 @@
+use indexmap::IndexMap;
 use pest::iterators::Pairs;
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::rc::Rc;
 
@@ -85,7 +85,7 @@ impl Literal {
         &self,
         state: &mut State<'_>,
         provided: &[Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         if let Self::Identifier(id) = self {
             match state.try_get(id) {

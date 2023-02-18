@@ -1,7 +1,8 @@
 use std::cmp;
 use std::fmt::Display;
-use std::{collections::HashMap, rc::Rc};
+use std::rc::Rc;
 
+use indexmap::IndexMap;
 use thiserror::Error;
 
 use crate::environment::NativePatternMatch;
@@ -22,7 +23,7 @@ pub struct PatternMatch {
     /// The block to be executes if the match is successful.
     pub block: Block,
     /// The variable from the program necessary for the block to evaluate correctly.
-    pub captures: HashMap<Rc<str>, Value>,
+    pub captures: IndexMap<Rc<str>, Value>,
 }
 
 impl Display for PatternMatch {
@@ -108,7 +109,7 @@ pub enum Value {
     /// A list of other Ryan values.
     List(Rc<[Value]>),
     /// An association of strings to other Ryan values.
-    Map(Rc<HashMap<Rc<str>, Value>>),
+    Map(Rc<IndexMap<Rc<str>, Value>>),
     /// A list of pattern match rules for a given identifier.
     PatternMatches(Rc<str>, Vec<Rc<PatternMatch>>),
     /// A pattern match where the code to be executed in case of a match is native code,
@@ -282,7 +283,7 @@ impl Value {
                 let types = dict
                     .iter()
                     .map(|(key, value)| (key.to_string(), value.canonical_type()))
-                    .collect::<HashMap<_, _>>();
+                    .collect::<IndexMap<_, _>>();
 
                 let mut element_type = None;
                 let mut all_same = true;
@@ -301,7 +302,7 @@ impl Value {
                     if let Some(typ) = element_type {
                         Type::Dictionary(Box::new(typ.clone()))
                     } else {
-                        Type::StrictRecord(HashMap::new())
+                        Type::StrictRecord(IndexMap::new())
                     }
                 } else {
                     Type::StrictRecord(types)
@@ -329,7 +330,7 @@ pub enum ValueIter<'a> {
     /// Iterator over a [`Value::List`] value.
     List(std::slice::Iter<'a, Value>),
     /// Iterator over a [`Value::Map`] value.
-    Map(std::collections::hash_map::Iter<'a, Rc<str>, Value>),
+    Map(indexmap::map::Iter<'a, Rc<str>, Value>),
 }
 
 impl<'a> Iterator for ValueIter<'a> {

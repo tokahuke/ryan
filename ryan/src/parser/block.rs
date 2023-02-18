@@ -1,5 +1,5 @@
+use indexmap::IndexMap;
 use pest::iterators::Pairs;
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::rc::Rc;
 
@@ -64,7 +64,7 @@ impl Block {
         &self,
         state: &mut State<'_>,
         provided: &mut [Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         let mut provided = provided.to_vec();
 

@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::rc::Rc;
 
+use indexmap::IndexMap;
 use pest::iterators::Pairs;
 
 use crate::rc_world;
@@ -34,9 +34,9 @@ pub enum Type {
     /// A list of given length where each element has a specific type.
     Tuple(Vec<Type>),
     /// A map where the given keys correspond to values of the given types.
-    Record(HashMap<String, Type>),
+    Record(IndexMap<String, Type>),
     /// A map containing only the given keys corresponding to values of the given types.
-    StrictRecord(HashMap<String, Type>),
+    StrictRecord(IndexMap<String, Type>),
     /// A value that can be of any of the values in a list.
     Or(Vec<Type>),
     /// A type which cannot be inspected. This variant cannot be created directly from Ryan code.
@@ -152,9 +152,9 @@ pub enum TypeExpression {
     /// A list of given length where each element has a specific type.
     Tuple(Vec<TypeExpression>),
     /// A map where the given keys correspond to values of the given types.
-    Record(HashMap<String, TypeExpression>),
+    Record(IndexMap<String, TypeExpression>),
     /// A map containing only the given keys corresponding to values of the given types.
-    StrictRecord(HashMap<String, TypeExpression>),
+    StrictRecord(IndexMap<String, TypeExpression>),
     /// A value that can be of any of the values in a list.
     Or(Vec<TypeExpression>),
     /// A user-defined type stored in a given variable.
@@ -279,7 +279,7 @@ impl TypeExpression {
         &self,
         state: &mut State<'_>,
         provided: &[Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         if let Self::Variable(id) = self {
             match state.try_get(id) {
@@ -317,13 +317,13 @@ impl TypeExpression {
                 record
                     .iter()
                     .map(|(id, expr)| expr.eval(state).map(|r#type| (id.clone(), r#type)))
-                    .collect::<Option<HashMap<_, _>>>()?,
+                    .collect::<Option<IndexMap<_, _>>>()?,
             ),
             Self::StrictRecord(record) => Type::StrictRecord(
                 record
                     .iter()
                     .map(|(id, expr)| expr.eval(state).map(|r#type| (id.clone(), r#type)))
-                    .collect::<Option<HashMap<_, _>>>()?,
+                    .collect::<Option<IndexMap<_, _>>>()?,
             ),
             Self::Or(items) => Type::Or(
                 items

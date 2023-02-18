@@ -9,11 +9,12 @@ mod pattern;
 mod types;
 mod value;
 
+use indexmap::IndexMap;
 use pest::{iterators::Pair, Parser as _};
 use pest_derive::Parser;
 use std::fmt::{self, Display};
+use std::rc::Rc;
 use std::str;
-use std::{collections::HashMap, rc::Rc};
 use thiserror::Error;
 
 use crate::environment::Environment;
@@ -136,7 +137,7 @@ impl Display for Context {
 #[derive(Debug)]
 struct State<'a> {
     inherited: Option<&'a State<'a>>,
-    bindings: HashMap<Rc<str>, Value>,
+    bindings: IndexMap<Rc<str>, Value>,
     error: Option<String>,
     contexts: Vec<Context>,
     environment: Environment,
@@ -146,7 +147,7 @@ impl<'a> State<'a> {
     fn new(environment: Environment) -> State<'a> {
         State {
             inherited: None,
-            bindings: HashMap::new(),
+            bindings: IndexMap::new(),
             error: None,
             contexts: vec![],
             environment,

@@ -1,5 +1,5 @@
+use indexmap::IndexMap;
 use pest::iterators::Pairs;
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::rc::Rc;
 use thiserror::Error;
@@ -212,7 +212,7 @@ impl Pattern {
         &self,
         state: &mut State<'_>,
         provided: &[Rc<str>],
-        values: &mut HashMap<Rc<str>, Value>,
+        values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         if let Self::Identifier(_, Some(type_guard)) = self {
             type_guard.capture(state, provided, values)?;
@@ -224,7 +224,7 @@ impl Pattern {
     pub(super) fn bind(
         &self,
         value: &Value,
-        bindings: &mut HashMap<Rc<str>, Value>,
+        bindings: &mut IndexMap<Rc<str>, Value>,
         state: &mut State<'_>,
     ) -> Option<Result<(), BindError>> {
         match (self, value) {
