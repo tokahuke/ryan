@@ -1,6 +1,6 @@
 # List of built-ins
 
-> Note: some of these built-ins will be released in the 0.1.1 (or 0.2.0) version of Ryan.
+<!-- > Note: some of these built-ins will be released in the 0.1.1 (or 0.2.0) version of Ryan. -->
 
 <table style="width: 100%">
     <tr>

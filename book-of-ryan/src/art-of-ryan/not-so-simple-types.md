@@ -45,7 +45,7 @@ However, the same dictionary is much nicer written this alternative way:
     favorite_color: "blue",     // use forgiving commas for extra niceness
 }
 ```
-Whenever the _key_ of a dictionary could be a _valid variable name_, you can omit the double quotes of the string. This doesn't change the value of dictionary (both examples correspond to the same thing); this is just _syntax sugar_: an nicer way of expressing the same thing.
+Whenever the _key_ of a dictionary **could** be a _valid variable name_, you can omit the double quotes of the string. This doesn't change the value of dictionary (both examples correspond to the same thing); this is just _syntax sugar_: an nicer way of expressing the same thing.
 
 Dictionaries have other few different tricks on their sleeves. For example, it is _syntactically valid_ to repeat a key in the dictionary:
 ```ryan
@@ -54,7 +54,15 @@ Dictionaries have other few different tricks on their sleeves. For example, it i
     a: 2,
 }
 ```
-However, only the _last_ occurrence of the same key will count to the final result. The above dictionary evaluates to `{ a: 2 }`. 
+However, only the _last_ occurrence of the same key will count to the final result. The above dictionary evaluates to `{ a: 2 }`. You can also use the name of a variable directly, without the value, if the key coincides with the variable name:
+```ryan
+let a = 2;
+
+{
+    a,      // ... as opposed to `a: a`
+}
+```
+The above will also evaluate to `{ a: 2 }`.
 
 You can also specify an _`if` guard_ at the end of each key, in order to make its insertion in the dictionary optional, like so:
 ```ryan
