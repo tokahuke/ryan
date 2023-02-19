@@ -1,5 +1,5 @@
 [package]
-name = "ryan-lang"
+name = "ryan-lang-node"
 version = "0.2.0"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 edition = "2021"

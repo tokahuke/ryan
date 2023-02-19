@@ -33,9 +33,10 @@ And you are done. You will not even need `sudo`!
 ## Getting the Ryan library
 
 Depending on your language, you can install a binding to Ryan from your standard package manager:
+```bash
+cargo install ryan          # Rust
+pip install ryan-lang       # Python
+npm install ryan-lang-web   # JavaScript (web)
+npm install ryan-lang-node  # JavaScript (NodeJS)
 ```
-cargo install ryan      # Rust
-pip install ryan-lang   # Python
-npm install ryan-js     # JavaScript (web)
-````
 If a binding is not available to your language, you can always use the Ryan CLI + you favorite JSON parser as a fallback. The Ryan CLI is already thought-out for this kind of programmatic interaction.

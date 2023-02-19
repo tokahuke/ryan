@@ -65,9 +65,10 @@ cargo install ryan-cli
 
 Depending on your language, you can install a binding to Ryan from your standard package manager:
 ```bash
-cargo install ryan      # Rust
-pip install ryan-lang   # Python
-npm install ryan-lang   # JavaScript (web)
+cargo install ryan          # Rust
+pip install ryan-lang       # Python
+npm install ryan-lang-web   # JavaScript (web)
+npm install ryan-lang-node  # JavaScript (NodeJS)
 ```
 
 ## Isn't this similar to X?
