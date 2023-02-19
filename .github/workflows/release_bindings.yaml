@@ -58,7 +58,7 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          cd ryan-web && wasm-pack publish -t nodejs
+          cd ryan-web && wasm-pack publish -t bundler
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -82,6 +82,6 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          cd ryan-js && wasm-pack publish -t bundler
+          cd ryan-js && wasm-pack publish -t nodejs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
