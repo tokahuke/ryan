@@ -58,7 +58,9 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          cd ryan-web && make build
+          cd ryan-web
+          make build
+          cp readme.md ./pkg/readme.md
       
       - name: Publish to NpmJS.org
         uses: JS-DevTools/npm-publish@v1
@@ -87,7 +89,9 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          cd ryan-js && make build
+          cd ryan-js
+          make build
+          cp readme.md ./pkg/readme.md
 
       - name: Publish to NpmJS.org
         uses: JS-DevTools/npm-publish@v1
