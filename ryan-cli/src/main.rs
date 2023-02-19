@@ -26,6 +26,9 @@ use termcolor::{ColorChoice, StandardStream};
 #[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
+    /// If set, will interpret the FILE not as a filename, but as actual Ryan code.
+    #[clap(long, short)]
+    command: bool,
     /// The name of the file to be executed. Pass `-` to read from standard input.
     file: String,
     /// Hermetic mode: disables all imports.
@@ -50,9 +53,10 @@ fn main() -> Result<(), anyhow::Error> {
     };
 
     // Eval:
-    let output: serde_json::Value = match cli.file.as_str() {
-        "-" => ryan::from_reader_with_env(&env, std::io::stdin().lock())?,
-        path => ryan::from_path_with_env(&env, path)?,
+    let output: serde_json::Value = match (cli.command, cli.file.as_str()) {
+        (false, "-") => ryan::from_reader_with_env(&env, std::io::stdin().lock())?,
+        (false, path) => ryan::from_path_with_env(&env, path)?,
+        (true, code) => ryan::from_str_with_env(&env, code)?,
     };
 
     // Print:

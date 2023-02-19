@@ -48,16 +48,66 @@ pub struct ErrorEntry {
     pub error: String,
 }
 
+impl ErrorEntry {
+    fn to_string_with(&self, input: &str) -> String {
+        let (line_start, col_start) = crate::utils::line_col(input, self.span.0);
+        let (line_end, col_end) = crate::utils::line_col(input, self.span.1);
+
+        let mut string = String::new();
+        string.push_str(&format!(
+            "Starting at line {}, col {}\n",
+            line_start + 1,
+            col_start + 1
+        ));
+
+        let line_display_gap: String = std::iter::repeat(' ').take((line_end + 1).to_string().len()).collect();
+
+        string.push_str(&format!(" {line_display_gap} \u{007c}\n"));
+        for (i, line) in input
+            .lines()
+            .enumerate()
+            .skip(line_start)
+            .take(line_end - line_start + 1)
+        {
+            string.push_str(&format!(" {} \u{007c} {line}\n", i + 1));
+
+            let start_point = if line_start != line_end && i != line_start { 0 } else { col_start };
+            let end_point = if line_start != line_end && i != line_end { line.chars().count() } else { col_end };
+
+            string.push_str(&format!(" {line_display_gap} \u{007c} "));
+            for _ in 0..start_point {
+                string.push(' ');
+            }
+            for _ in 0..(end_point - start_point) {
+                string.push('^');
+            }
+            string.push('\n');
+        }
+        string.push_str(&format!(" {line_display_gap} \u{007c}\n"));
+
+        string.push_str(&format!(" {line_display_gap} = {}", self.error));
+
+        string
+    }
+}
+
 /// A logger of errors that happen post-parsing. Post parsing always succeeds, even with
 /// a list of errors. It's the whole parsing processing that fails if there are
 /// post-parsing errors.
-#[derive(Debug, Default)]
-pub struct ErrorLogger {
+#[derive(Debug)]
+pub struct ErrorLogger<'a> {
+    input: &'a str,
     /// The list of errors found during post-parsing, in the orders they were found.
     pub errors: Vec<ErrorEntry>,
 }
 
-impl ErrorLogger {
+impl ErrorLogger<'_> {
+    fn new(input: &str) -> ErrorLogger {
+        ErrorLogger {
+            input,
+            errors: vec![],
+        }
+    }
     fn absorb<T, E>(&mut self, pair: &Pair<Rule>, r: Result<T, E>) -> T
     where
         T: Default,
@@ -76,6 +126,33 @@ impl ErrorLogger {
     }
 }
 
+#[derive(Debug)]
+pub struct ParseErrors {
+    errors: Vec<String>,
+}
+
+impl From<ErrorLogger<'_>> for ParseErrors {
+    fn from(value: ErrorLogger<'_>) -> Self {
+        ParseErrors {
+            errors: value
+                .errors
+                .into_iter()
+                .map(|entry| entry.to_string_with(value.input))
+                .collect(),
+        }
+    }
+}
+
+impl Display for ParseErrors {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for error in &self.errors {
+            write!(f, "\n{error}")?;
+        }
+
+        Ok(())
+    }
+}
+
 /// A general parsing error.
 #[derive(Error)]
 pub enum ParseError {
@@ -84,8 +161,8 @@ pub enum ParseError {
     During(pest::error::Error<Rule>),
     /// A parse errors found during the construction of the syntax tree. This covers some
     /// constraints not made explicit in the Pest grammar.
-    #[error("{0:?}")]
-    Post(ErrorLogger),
+    #[error("{0}")]
+    Post(ParseErrors),
 }
 
 impl fmt::Debug for ParseError {
@@ -101,7 +178,7 @@ impl fmt::Debug for ParseError {
 /// its root, a [`Block`].
 pub fn parse(s: &str) -> Result<Block, ParseError> {
     let mut parsed = Parser::parse(Rule::root, s).map_err(ParseError::During)?;
-    let mut error_logger = ErrorLogger::default();
+    let mut error_logger = ErrorLogger::new(s);
     let main = parsed.next().expect("there is always a matching token");
     let block = if !main.as_str().is_empty() {
         Block::parse(&mut error_logger, main.into_inner())
@@ -112,7 +189,7 @@ pub fn parse(s: &str) -> Result<Block, ParseError> {
     if error_logger.errors.is_empty() {
         Ok(block)
     } else {
-        Err(ParseError::Post(error_logger))
+        Err(ParseError::Post(error_logger.into()))
     }
 }
 

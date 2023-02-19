@@ -1,17 +1,9 @@
---- v0.2.0
 
-- Make operations short-circuiting.
-- Forgiving numbers.
-- Variable key in dict.
-- Get rid of serde_json (make optional dependency).
-- quoting with snailquote is kinda... wrong...
-- Remember insertion order.
-
+- `-c` flag in CLI.
 
 --- ... beyond!
 
 - Predicate types.
-- Dynamic keys in dicts.
 - Split mode.
 - Support for more output formats.
 - `value_from` functions.

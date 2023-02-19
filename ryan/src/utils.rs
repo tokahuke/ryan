@@ -80,7 +80,7 @@ pub enum UnescapeError {
     NoStartingQuote,
     #[error("No such escape sequence \\{0}")]
     UnknownEscape(char),
-    #[error("Expected hexadecimal digit, got {0}")]
+    #[error("Expected hexadecimal digit, got {0:?}")]
     NotADigit(char),
     #[error("The character \\u{0:x} is not valid unicode")]
     NotUnicode(u32),
@@ -143,4 +143,20 @@ pub(crate) fn unescape(s: &str) -> Result<String, UnescapeError> {
     } else {
         Err(UnescapeError::SpuriousTail)
     }
+}
+
+pub(crate) fn line_col(input: &str, idx: usize) -> (usize, usize) {
+    let mut lines = 0;
+    let mut pos = 0;
+
+    for ch in input.chars().take(idx) {
+        if ch == '\n' {
+            lines += 1;
+            pos = 0;
+        } else {
+            pos += 1;
+        }
+    }
+
+    (lines, pos)
 }
