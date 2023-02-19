@@ -58,11 +58,14 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          cd ryan-web
-          wasm-pack build -t bundler
-          wasm-pack publish -t bundler
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          cd ryan-web && make build
+      
+      - name: Publish to NpmJS.org
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ryan-web/pkg/package.json
+          check-version: true
 
   javascript-node:
     runs-on: ubuntu-latest
@@ -84,8 +87,11 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          cd ryan-js
-          wasm-pack build -t nodejs
-          wasm-pack publish -t nodejs
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          cd ryan-js && make build
+
+      - name: Publish to NpmJS.org
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ryan-js/pkg/package.json
+          check-version: true
