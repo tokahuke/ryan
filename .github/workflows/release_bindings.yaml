@@ -58,7 +58,7 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          make publish
+          cd ryan-web && make publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -82,6 +82,6 @@ jobs:
       
       - name: Build JS bindings with Wasm Pack
         run: |
-          make publish
+          cd ryan-js && make publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
