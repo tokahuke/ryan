@@ -1,5 +1,6 @@
 
 - `-c` flag in CLI.
+- Better error messages for errors happening post-parse.
 
 --- ... beyond!
 

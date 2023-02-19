@@ -565,7 +565,7 @@ version = "0.2.1"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
- "ryan 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ryan 0.2.0",
  "thiserror",
  "wasm-bindgen",
  "wasm-bindgen-test",
