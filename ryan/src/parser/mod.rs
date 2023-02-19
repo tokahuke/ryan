@@ -1,6 +1,7 @@
 mod binding;
 mod block;
 mod comprehension;
+mod error;
 mod expression;
 mod import;
 mod literal;
@@ -10,9 +11,9 @@ mod types;
 mod value;
 
 use indexmap::IndexMap;
-use pest::{iterators::Pair, Parser as _};
+use pest::Parser as _;
 use pest_derive::Parser;
-use std::fmt::{self, Display};
+use std::fmt::Display;
 use std::rc::Rc;
 use std::str;
 use thiserror::Error;
@@ -22,6 +23,7 @@ use crate::environment::Environment;
 pub use self::binding::Binding;
 pub use self::block::Block;
 pub use self::comprehension::ListComprehension;
+pub use self::error::{ErrorEntry, ErrorLogger, ParseError};
 pub use self::expression::{Dict, DictItem, Expression};
 pub use self::import::{Format, Import};
 pub use self::literal::Literal;
@@ -39,137 +41,88 @@ pub use self::value::{NotIterable, NotRepresentable, PatternMatch, Value};
 #[grammar = "ryan.pest"] // relative to src
 struct Parser;
 
-/// An entry of a post-parsing error, logged by [`ErrorLogger`].
-#[derive(Debug)]
-pub struct ErrorEntry {
-    /// The beginning and end of the offending code.
-    pub span: (usize, usize),
-    /// The error message for this error.
-    pub error: String,
-}
-
-impl ErrorEntry {
-    fn to_string_with(&self, input: &str) -> String {
-        let (line_start, col_start) = crate::utils::line_col(input, self.span.0);
-        let (line_end, col_end) = crate::utils::line_col(input, self.span.1);
-
-        let mut string = String::new();
-        string.push_str(&format!(
-            "Starting at line {}, col {}\n",
-            line_start + 1,
-            col_start + 1
-        ));
-
-        let line_display_gap: String = std::iter::repeat(' ').take((line_end + 1).to_string().len()).collect();
-
-        string.push_str(&format!(" {line_display_gap} \u{007c}\n"));
-        for (i, line) in input
-            .lines()
-            .enumerate()
-            .skip(line_start)
-            .take(line_end - line_start + 1)
-        {
-            string.push_str(&format!(" {} \u{007c} {line}\n", i + 1));
-
-            let start_point = if line_start != line_end && i != line_start { 0 } else { col_start };
-            let end_point = if line_start != line_end && i != line_end { line.chars().count() } else { col_end };
-
-            string.push_str(&format!(" {line_display_gap} \u{007c} "));
-            for _ in 0..start_point {
-                string.push(' ');
-            }
-            for _ in 0..(end_point - start_point) {
-                string.push('^');
-            }
-            string.push('\n');
-        }
-        string.push_str(&format!(" {line_display_gap} \u{007c}\n"));
-
-        string.push_str(&format!(" {line_display_gap} = {}", self.error));
-
-        string
-    }
-}
-
-/// A logger of errors that happen post-parsing. Post parsing always succeeds, even with
-/// a list of errors. It's the whole parsing processing that fails if there are
-/// post-parsing errors.
-#[derive(Debug)]
-pub struct ErrorLogger<'a> {
-    input: &'a str,
-    /// The list of errors found during post-parsing, in the orders they were found.
-    pub errors: Vec<ErrorEntry>,
-}
-
-impl ErrorLogger<'_> {
-    fn new(input: &str) -> ErrorLogger {
-        ErrorLogger {
-            input,
-            errors: vec![],
-        }
-    }
-    fn absorb<T, E>(&mut self, pair: &Pair<Rule>, r: Result<T, E>) -> T
-    where
-        T: Default,
-        E: ToString,
-    {
-        match r {
-            Ok(ok) => ok,
-            Err(err) => {
-                self.errors.push(ErrorEntry {
-                    span: (pair.as_span().start(), pair.as_span().end()),
-                    error: err.to_string(),
-                });
-                T::default()
-            }
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct ParseErrors {
-    errors: Vec<String>,
-}
-
-impl From<ErrorLogger<'_>> for ParseErrors {
-    fn from(value: ErrorLogger<'_>) -> Self {
-        ParseErrors {
-            errors: value
-                .errors
-                .into_iter()
-                .map(|entry| entry.to_string_with(value.input))
-                .collect(),
-        }
-    }
-}
-
-impl Display for ParseErrors {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for error in &self.errors {
-            write!(f, "\n{error}")?;
-        }
-
-        Ok(())
-    }
-}
-
-/// A general parsing error.
-#[derive(Error)]
-pub enum ParseError {
-    /// A parse error found during the Pest parsing process. These are syntax errors.
-    #[error("{0}")]
-    During(pest::error::Error<Rule>),
-    /// A parse errors found during the construction of the syntax tree. This covers some
-    /// constraints not made explicit in the Pest grammar.
-    #[error("{0}")]
-    Post(ParseErrors),
-}
-
-impl fmt::Debug for ParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl Rule {
+    /// A human-readable name for each grammar rule.
+    fn name(&self) -> &'static str {
         match self {
-            Self::During(pest) => write!(f, "\n{pest}"),
-            Self::Post(errors) => write!(f, "\n{errors:#?}"),
+            Rule::EOI => "end of input",
+            Rule::WHITESPACE => "whitespace",
+            Rule::COMMENT => "a comment",
+            Rule::root => "a Ryan program",
+            Rule::main => "a Ryan program",
+            Rule::literal => "a literal value",
+            Rule::unsigned => "an unsigned number",
+            Rule::null => "null",
+            Rule::sign => "`+` or `-`",
+            Rule::number => "a number",
+            Rule::bool => "a boolean",
+            Rule::escaped => "the interior of escaped text",
+            Rule::controlCode => "a control code in escaped text",
+            Rule::text => "text",
+            Rule::identifier => "a variable name",
+            Rule::identifierStr => "a variable name",
+            Rule::reserved => "a reserved keyword",
+            Rule::expression => "an expression",
+            Rule::binaryOp => "a binary operation",
+            Rule::orOp => "`or`",
+            Rule::andOp => "`and`",
+            Rule::equalsOp => "`==`",
+            Rule::notEqualsOp => "`!=`",
+            Rule::typeMatchesOp => "`:`",
+            Rule::greaterOp => "`>`",
+            Rule::greaterEqualOp => "`>=`",
+            Rule::lesserOp => "`<`",
+            Rule::lesserEqualOp => "`<=`",
+            Rule::isContainedOp => "`in`",
+            Rule::plusOp => "`+`",
+            Rule::minusOp => "`-`",
+            Rule::timesOp => "`*`",
+            Rule::dividedOp => "`/`",
+            Rule::remainderOp => "`%`",
+            Rule::defaultOp => "`?`",
+            Rule::juxtapositionOp => "a juxtaposition",
+            Rule::prefixOp => "a prefix operator",
+            Rule::notOp => "`not`",
+            Rule::postfixOp => "a postfix operator",
+            Rule::accessOp => "list or map access",
+            Rule::pathOp => "list or map access",
+            Rule::term => "an expression term",
+            Rule::list => "a list",
+            Rule::dictItem => "a dictionary item",
+            Rule::dict => "a dictionary",
+            Rule::conditional => "`if ... then ... else ...`",
+            Rule::listComprehension => "a list comprehension",
+            Rule::dictComprehension => "a dictionary comprehension",
+            Rule::forClause => "a `for` clause",
+            Rule::ifGuard => "an `if` guard",
+            Rule::keyValueClause => "a key-value clause",
+            Rule::pattern => "a pattern match",
+            Rule::wildcard => "a wildcard pattern patch",
+            Rule::matchIdentifier => "an identifier pattern match",
+            Rule::matchList => "a full list pattern match",
+            Rule::matchHead => "a list head pattern match",
+            Rule::matchTail => "a list tail pattern match",
+            Rule::matchDict => "a non-strict dictionary pattern match",
+            Rule::matchDictStrict => "a strict dictionary pattern match",
+            Rule::matchDictItem => "a dictionary item pattern match",
+            Rule::binding => "a variable binding",
+            Rule::patternMatchBinding => "a pattern match binding",
+            Rule::destructuringBiding => "a destructuring binding",
+            Rule::typeDefinition => "a type definition",
+            Rule::block => "a code block",
+            Rule::import => "an import statement",
+            Rule::importFormat => "an import format",
+            Rule::importFormatText => "import as text",
+            Rule::primitive => "a primitive type value",
+            Rule::typeExpression => "a type expression",
+            Rule::typeTerm => "a term in a type expression",
+            Rule::optionalType => "an optional type",
+            Rule::listType => "a list type",
+            Rule::dictionaryType => "a dictionary type",
+            Rule::tupleType => "a tuple type",
+            Rule::recordType => "a non-strict record type",
+            Rule::strictRecordType => "a strict record type",
+            Rule::typeItem => "a dictionary type key-value item",
         }
     }
 }
@@ -177,7 +130,9 @@ impl fmt::Debug for ParseError {
 /// Parses a Ryan string and returns an abstract syntax tree (AST) object, represented by
 /// its root, a [`Block`].
 pub fn parse(s: &str) -> Result<Block, ParseError> {
-    let mut parsed = Parser::parse(Rule::root, s).map_err(ParseError::During)?;
+    let mut parsed = Parser::parse(Rule::root, s).map_err(|e| ParseError {
+        errors: vec![ErrorEntry::from(e).to_string_with(s)],
+    })?;
     let mut error_logger = ErrorLogger::new(s);
     let main = parsed.next().expect("there is always a matching token");
     let block = if !main.as_str().is_empty() {
@@ -189,7 +144,7 @@ pub fn parse(s: &str) -> Result<Block, ParseError> {
     if error_logger.errors.is_empty() {
         Ok(block)
     } else {
-        Err(ParseError::Post(error_logger.into()))
+        Err(error_logger.into())
     }
 }
 

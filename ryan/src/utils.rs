@@ -148,8 +148,10 @@ pub(crate) fn unescape(s: &str) -> Result<String, UnescapeError> {
 pub(crate) fn line_col(input: &str, idx: usize) -> (usize, usize) {
     let mut lines = 0;
     let mut pos = 0;
+    let mut count = 0;
 
     for ch in input.chars().take(idx) {
+        count += 1;
         if ch == '\n' {
             lines += 1;
             pos = 0;
@@ -158,5 +160,8 @@ pub(crate) fn line_col(input: &str, idx: usize) -> (usize, usize) {
         }
     }
 
-    (lines, pos)
+    // Extra offset if `idx` points outside the string:
+    let extra_offset = idx - count;
+
+    (lines, pos + extra_offset)
 }
