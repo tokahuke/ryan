@@ -82,6 +82,8 @@ impl Block {
             binding.eval(state)?;
         }
 
-        self.expression.eval(state)
+        let ret = self.expression.eval(state)?;
+
+        Some(ret)
     }
 }
