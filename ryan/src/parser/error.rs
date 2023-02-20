@@ -56,33 +56,33 @@ impl From<pest::error::Error<Rule>> for ErrorEntry {
             ErrorVariant::CustomError { message } => message,
         };
 
-        dbg!(ErrorEntry { span, error })
+        ErrorEntry { span, error }
     }
 }
 
 impl ErrorEntry {
     /// Creates a human-readable form for this error entry, given the input it was derived from.
     pub(super) fn to_string_with(&self, input: &str) -> String {
-        let (line_start, col_start) = dbg!(crate::utils::line_col(input, self.span.0));
-        let (line_end, col_end) = dbg!(crate::utils::line_col(input, self.span.1));
+        let (line_start, col_start) = crate::utils::line_col(input, self.span.0);
+        let (line_end, col_end) = crate::utils::line_col(input, self.span.1);
 
         // The string buffer for this error message.
         let mut string = String::new();
-
-        // The header indicating where the error starts.
-        string.push_str(&format!(
-            "Starting at line {}, col {}\n",
-            line_start + 1,
-            col_start + 1
-        ));
 
         // The size of the margin to be set to fit the line number.
         let line_display_gap: String = std::iter::repeat(' ')
             .take((line_end + 1).to_string().len())
             .collect();
 
+        // The header indicating where the error starts.
+        string.push_str(&format!(
+            " {line_display_gap} \u{21e2} Starting at line {}, col {}:\n",
+            line_start + 1,
+            col_start + 1
+        ));
+
         // Start with an empty line:
-        string.push_str(&format!(" {line_display_gap} \u{007c}\n"));
+        string.push_str(&format!(" {line_display_gap} \u{2502}\n"));
 
         // For each line in which the error appears, do:
         for (i, line) in input
@@ -92,7 +92,7 @@ impl ErrorEntry {
             .take(line_end - line_start + 1)
         {
             // Print the line:
-            string.push_str(&format!(" {} \u{007c} {line}\n", i + 1));
+            string.push_str(&format!(" {} \u{2502} {line}\n", i + 1));
 
             // Now, underline the error portion...
 
@@ -109,7 +109,7 @@ impl ErrorEntry {
             };
 
             // Print the error line point:
-            string.push_str(&format!(" {line_display_gap} \u{007c} "));
+            string.push_str(&format!(" {line_display_gap} \u{2502} "));
             for _ in 0..start_point {
                 string.push(' ');
             }
@@ -120,7 +120,7 @@ impl ErrorEntry {
         }
 
         // End with an empty line:
-        string.push_str(&format!(" {line_display_gap} \u{007c}\n"));
+        string.push_str(&format!(" {line_display_gap} \u{2502}\n"));
 
         // Print the error message itself.
         string.push_str(&format!(" {line_display_gap} = {}", self.error));

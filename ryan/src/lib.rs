@@ -151,7 +151,7 @@ pub enum Error {
     #[error("Io error: {0}")]
     Io(std::io::Error),
     /// A parse error happened.
-    #[error("Parse error: {0}")]
+    #[error("{0}")]
     Parse(ParseError),
     /// A runtime error happened (e.g, there was a variable missing somewhere).
     #[error("Evaluation error: {0}")]
