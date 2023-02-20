@@ -153,6 +153,7 @@ pub fn parse(s: &str) -> Result<Block, ParseError> {
 enum Context {
     RunningFile(Rc<str>),
     EvaluatingBinding(Rc<str>),
+    DefiningType(Rc<str>),
     SubstitutingPattern(Option<Rc<str>>),
     LoadingImport(Rc<str>),
 }
@@ -162,6 +163,7 @@ impl Display for Context {
         match self {
             Self::RunningFile(filename) => write!(f, "Running {filename}"),
             Self::EvaluatingBinding(name) => write!(f, "Evaluating binding {name}"),
+            Self::DefiningType(typ) => write!(f, "Defining type {typ}"),
             Self::SubstitutingPattern(Some(name)) => write!(f, "Substituting pattern {name}"),
             Self::SubstitutingPattern(None) => write!(f, "Substituting anonymous pattern"),
             Self::LoadingImport(import) => write!(f, "Loading import {import:?}"),

@@ -233,6 +233,10 @@ impl Binding {
                 state.pop_ctx();
             }
             Self::Destructuring { pattern, block } => {
+                state.push_ctx(Context::EvaluatingBinding(rc_world::string_to_rc(
+                    pattern.to_string(),
+                )));
+
                 let evaluated = block.eval(state)?;
                 let mut new_bindings = IndexMap::default();
 
@@ -242,15 +246,20 @@ impl Binding {
                 }
 
                 state.bindings.extend(new_bindings);
+                state.pop_ctx();
             }
             Self::TypeDefinition {
                 identifier,
                 type_expression,
             } => {
+                state.push_ctx(Context::DefiningType(identifier.clone()));
+
                 let resolved_type = type_expression.eval(state)?;
                 state
                     .bindings
                     .insert(identifier.clone(), Value::Type(resolved_type));
+
+                state.pop_ctx();
             }
         }
 
