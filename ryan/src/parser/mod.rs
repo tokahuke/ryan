@@ -19,6 +19,7 @@ use std::str;
 use thiserror::Error;
 
 use crate::environment::Environment;
+use crate::rc_world;
 
 pub use self::binding::Binding;
 pub use self::block::Block;
@@ -150,6 +151,7 @@ pub fn parse(s: &str) -> Result<Block, ParseError> {
 
 #[derive(Debug)]
 enum Context {
+    RunningFile(Rc<str>),
     EvaluatingBinding(Rc<str>),
     SubstitutingPattern(Option<Rc<str>>),
     LoadingImport(Rc<str>),
@@ -158,6 +160,7 @@ enum Context {
 impl Display for Context {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::RunningFile(filename) => write!(f, "Running {filename}"),
             Self::EvaluatingBinding(name) => write!(f, "Evaluating binding {name}"),
             Self::SubstitutingPattern(Some(name)) => write!(f, "Substituting pattern {name}"),
             Self::SubstitutingPattern(None) => write!(f, "Substituting anonymous pattern"),
@@ -181,7 +184,9 @@ impl<'a> State<'a> {
             inherited: None,
             bindings: IndexMap::new(),
             error: None,
-            contexts: vec![],
+            contexts: vec![Context::RunningFile(rc_world::str_to_rc(
+                environment.current_module.as_deref().unwrap_or("<main>"),
+            ))],
             environment,
         }
     }

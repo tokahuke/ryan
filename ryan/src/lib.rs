@@ -154,7 +154,7 @@ pub enum Error {
     #[error("{0}")]
     Parse(ParseError),
     /// A runtime error happened (e.g, there was a variable missing somewhere).
-    #[error("Evaluation error: {0}")]
+    #[error("{0}")]
     Eval(EvalError),
     /// An error happened when transforming the final result to JSON.
     #[error("Decode error: {0}")]
