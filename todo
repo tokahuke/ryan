@@ -1,13 +1,14 @@
 
 - `-c` flag in CLI.
 - Better error messages for errors happening post-parse.
+- Fix 0/0 (and 0%0) panic.
+
 
 --- ... beyond!
 
 - Predicate types.
 - Split mode.
 - Support for more output formats.
-- `value_from` functions.
+- `value_from` functions. -> Still needed?
 - multiple loops in comprehensions.
-- Better error messages.
 - Resource limiting.

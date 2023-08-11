@@ -373,6 +373,9 @@ impl BinaryOperation {
                 Value::Float(left * right)
             }
 
+            (Value::Integer(_), BinaryOperator::Divided, Value::Integer(0)) => {
+                Value::Float(f64::NAN)
+            }
             (Value::Integer(left), BinaryOperator::Divided, Value::Integer(right)) => {
                 Value::Integer(left / right)
             }
@@ -386,6 +389,9 @@ impl BinaryOperation {
                 Value::Float(left / right)
             }
 
+            (Value::Integer(_), BinaryOperator::Remainder, Value::Integer(0)) => {
+                Value::Float(f64::NAN)
+            }
             (Value::Integer(left), BinaryOperator::Remainder, Value::Integer(right)) => {
                 Value::Integer(left % right)
             }
