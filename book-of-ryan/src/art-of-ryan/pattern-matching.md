@@ -72,7 +72,7 @@ You can use any pattern to declare a pattern match.
 All pattern matches in Ryan are _closures_. That means that you are free to use variables defined outside the pattern match definition in your return expression:
 ```ryan
 let object_name = "lights";
-let there_are quantity = "There are " + fmt quantity + " " + object_name;
+let there_are quantity = `There are ${quantity} ${object_name}`;
 
 there_are 4     // -> "There are 4 lights"
 ```
@@ -83,7 +83,7 @@ A pattern match does not expect only an expression, but a whole block. This mean
 ```ryan
 let there_are quantity = 
     let object_name = "lights";
-    "There are " + fmt quantity + " " + object_name;
+    `There are ${quantity} ${object_name}`;
 
 there_are 4     // -> "There are 4 lights"
 ```

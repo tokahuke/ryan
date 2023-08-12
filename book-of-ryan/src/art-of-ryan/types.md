@@ -53,8 +53,8 @@ Every time you declare a new variable in a pattern match, you can define an opti
 
 Things get fun when you can bring _polymorphism_ to your pattern matches by powering type guards with _alternative patterns_:
 ```ryan
-let foo x: int = "I am an integer: " + fmt x;
-let foo x: float = "I am a float: " + fmt x;
+let foo x: int = `I am an integer: ${x}`;
+let foo x: float = `I am a float: ${x}`;
 [foo 1, foo 1.0]        // -> ["I am an integer: 1", "I am a float: 1"]
 ```
 

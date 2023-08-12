@@ -59,6 +59,11 @@ Although `import` expects a string as input, you cannot use an expression that y
 ```ryan
 import "my-" + "file.ryan"
 ```
+nor will this
+```
+let num = 4;
+import `file-${num}.ryan`
+```
 You can however, go around this limitation in many cases. For example, you can use `if ... then ... else ...` for conditional imports:
 ```ryan
 if 1 == 1 then

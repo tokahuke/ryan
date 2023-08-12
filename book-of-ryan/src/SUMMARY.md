@@ -5,7 +5,7 @@
 
 # The Art of Ryan
 
-- [Hello... Jason!?](./art-of-ryan/hello-json.md)
+- [Hello... JSON!?](./art-of-ryan/hello-json.md)
 - [Simple types](./art-of-ryan/simple-types.md)
 - [Variables](./art-of-ryan/variables.md)
 - [Not-so-simple types](./art-of-ryan/not-so-simple-types.md)

@@ -1,4 +1,4 @@
-# Hello... Jason!?
+# Hello... JSON!?
 
 > Note: if you are unfamiliar with JSON, you may skip this chapter and go right ahead to the next one. You will still be able to understand what Ryan is all about.
 
@@ -55,6 +55,12 @@ strings
 are allowed!"
 ```
 ... given that they are valid UTF8. However, only double-quoted strings are possible. How could you possibly like those single-quotes aberrations?
+
+Finally, _template strings_ à la JavaScript are also supported. These will make your code way simpler to read:
+```
+`template ${"string"}`
+```
+The above code evaluates to the string `"template string"`.
 
 ## Conclusion to the introduction
 

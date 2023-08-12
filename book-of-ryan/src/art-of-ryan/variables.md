@@ -29,7 +29,7 @@ let a_guy = "Ryan";
 What this line says is that `a_guy` refers to the value `"Ryan"` from now on. Now, you can start using it to build more complex stuff on top of it:
 ```ryan
 let a_guy = "Ryan";
-"Hello, " + a_guy + "!"
+`Hello, ${a_guy}!`
 ```
 This will evaluate to the text `"Hello, Ryan!"`. The construction `let ... = ...;` is called a _variable binding_, becaus it binds the value (`"Ryan"`) to an identifier (`a_guy`).
 

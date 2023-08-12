@@ -86,10 +86,11 @@ However, you can use the "`fmt` trick" to achieve the desired result:
 ```ryan
 "there are " + fmt 4 + " lights"    // there are 4 lights
 ```
-The `fmt`... thingy... takes any value in Ryan and produces a string representation of it, even if it is not very useful.
-
-> Note: `fmt` is called a native pattern match and will be introduced later.
-
+Or, better still, you can use _template strings_, where you can interpolate full expressions in the middle of your string, like so:
+```ryan
+`there are ${5 - 1} lights`     // there are 4 lights
+```
+Note that template strings, unlike normal strings, are escaped using \` and not `"`.
 
 ## `null`
 
