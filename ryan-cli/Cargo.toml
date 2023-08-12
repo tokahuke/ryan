@@ -1,6 +1,6 @@
 [package]
 name = "ryan-cli"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Pedro Bittencorut Arruda <pedrobittencourt3@gmail.com>"]
 description = "Ryan: a configuration language for the practical programmer"
