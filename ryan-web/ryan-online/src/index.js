@@ -19,8 +19,8 @@ let number_of_lights = 4;
 
 {
     lights: {
-        picard: number_of_lights,
-        gul_madred: number_of_lights + 1,
+        gul_madred: \`There are \${number_of_lights + 1} lights!\`,
+        picard: \`There are \${number_of_lights} lights!\`,
     }
 }
 `;
