@@ -72,7 +72,7 @@ let number_of_lights = 4;
 
 class AutoRun {
   constructor() {
-    const autoRun = localStorage.getItem("ryanOnline.autoRun");
+    let autoRun = localStorage.getItem("ryanOnline.autoRun");
     if (autoRun === null) {
       localStorage.setItem("ryanOnline.autoRun", true);
       autoRun = true;
