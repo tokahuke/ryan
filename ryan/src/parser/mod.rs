@@ -7,6 +7,7 @@ mod import;
 mod literal;
 mod operation;
 mod pattern;
+mod template_string;
 mod types;
 mod value;
 
@@ -63,6 +64,10 @@ impl Rule {
             Rule::identifier => "a variable name",
             Rule::identifierStr => "a variable name",
             Rule::reserved => "a reserved keyword",
+            Rule::templateString => "a template string",
+            Rule::templateEscaped => "the interior of a template string",
+            Rule::interpolation => "a string interpolation in a template",
+            Rule::templateControlCode => "a control code in a template string",
             Rule::expression => "an expression",
             Rule::binaryOp => "a binary operation",
             Rule::orOp => "`or`",

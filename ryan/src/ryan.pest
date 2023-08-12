@@ -30,6 +30,14 @@ unsigned = @{
         | "float" | "number" | "any") ~ !( ASCII_ALPHANUMERIC | "_")
     }
 
+
+// Templates:
+templateString = ${ "`" ~ templateEscaped* ~ "`" }
+    templateEscaped = ${ !"`" ~ ("\\" ~ templateControlCode | interpolation | ANY) }
+    templateControlCode = ${ "`" | "$" }
+    interpolation = !{ "${" ~ expression ~ "}" }
+
+
 // Expressions:
 expression = { prefixOp* ~ term ~ postfixOp* ~ (binaryOp ~ prefixOp* ~ term ~ postfixOp*)* }
 binaryOp = _{
@@ -69,6 +77,7 @@ term = _{
     | dictComprehension
     | conditional
     | literal
+    | templateString
     | import
     | "(" ~ expression ~ ")"
 }

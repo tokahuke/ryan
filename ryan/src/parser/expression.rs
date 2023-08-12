@@ -7,7 +7,6 @@ use std::{cell::RefCell, fmt::Display, rc::Rc};
 
 use crate::{rc_world, utils::QuotedStr};
 
-use super::Rule;
 use super::State;
 use super::{comprehension::DictComprehension, ErrorLogger};
 use super::{comprehension::ListComprehension, operation::BinaryOperator};
@@ -20,6 +19,7 @@ use super::{
     operation::{PostfixOperation, PostfixOperator},
     value::Value,
 };
+use super::{template_string::TemplateString, Rule};
 
 lazy_static::lazy_static! {
     static ref PRATT_PARSER: PrattParser<Rule> = {
@@ -60,6 +60,8 @@ pub enum Expression {
     Conditional(Box<Expression>, Box<Expression>, Box<Expression>),
     /// Builds a Ryan value from a literal.
     Literal(Literal),
+    /// Builds a Ryan template string.
+    TemplateString(TemplateString),
     /// Builds a Ryan value of a binary operation over two Ryan values.
     BinaryOperation(Box<BinaryOperation>),
     /// Builds a Ryan value of a prefix operator applied on a Ryan value.
@@ -94,6 +96,7 @@ impl Display for Expression {
                 write!(f, "}}")?;
             }
             Self::Literal(lit) => write!(f, "{lit}")?,
+            Self::TemplateString(template) => write!(f, "{template}")?,
             Self::BinaryOperation(op) => write!(f, "{op}")?,
             Self::PrefixOperation(op) => write!(f, "{op}")?,
             Self::PostfixOperation(op) => write!(f, "{op}")?,
@@ -147,6 +150,10 @@ impl Expression {
                     Expression::Import(Import::parse(*logger_cell.borrow_mut(), pair.into_inner()))
                 }
                 Rule::expression => Self::parse(*logger_cell.borrow_mut(), pair.into_inner()),
+                Rule::templateString => Expression::TemplateString(TemplateString::parse(
+                    *logger_cell.borrow_mut(),
+                    pair.into_inner(),
+                )),
                 Rule::listComprehension => Expression::ListComprehension(Box::new(
                     ListComprehension::parse(*logger_cell.borrow_mut(), pair.into_inner()),
                 )),
@@ -206,6 +213,9 @@ impl Expression {
             Self::Literal(lit) => {
                 lit.capture(state, provided, values)?;
             }
+            Self::TemplateString(template) => {
+                template.capture(state, provided, values)?;
+            }
             Self::BinaryOperation(op) => {
                 op.left.capture(state, provided, values)?;
                 op.right.capture(state, provided, values)?;
@@ -256,6 +266,7 @@ impl Expression {
                 to_eval.eval(state)?
             }
             Self::Literal(lit) => lit.eval(state)?,
+            Self::TemplateString(template) => template.eval(state)?,
             Self::BinaryOperation(op) => op.eval(state)?,
             Self::PrefixOperation(op) => op.eval(state)?,
             Self::PostfixOperation(op) => op.eval(state)?,

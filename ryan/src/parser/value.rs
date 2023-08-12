@@ -351,3 +351,45 @@ impl<'a> Iterator for ValueIter<'a> {
 pub struct NotIterable {
     val: Value,
 }
+
+
+pub struct TemplatedValue(pub Value);
+
+impl Display for TemplatedValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self.0 {
+            Value::Null => write!(f, "null")?,
+            Value::Bool(b) => write!(f, "{b}")?,
+            Value::Integer(int) => write!(f, "{int}")?,
+            Value::Float(float) => write!(f, "{float}")?,
+            Value::Text(text) => write!(f, "{text}")?,
+            Value::List(list) => {
+                write!(f, "[")?;
+                crate::utils::fmt_list(f, list.iter())?;
+                write!(f, "]")?;
+            }
+            Value::Map(map) => {
+                write!(f, "{{")?;
+                crate::utils::fmt_map(f, map.iter())?;
+                write!(f, "}}")?;
+            }
+            Value::PatternMatches(name, pattern_matches) => {
+                write!(
+                    f,
+                    "![pattern {name} {}]",
+                    pattern_matches
+                        .iter()
+                        .map(|p| p.to_string())
+                        .collect::<Vec<_>>()
+                        .join(" | ")
+                )?;
+            }
+            Value::NativePatternMatch(pattern_match) => {
+                write!(f, "{pattern_match}")?;
+            }
+            Value::Type(r#type) => write!(f, "{type}")?,
+        };
+
+        Ok(())
+    }
+}

@@ -1,0 +1,17 @@
+`template string`
+---
+`template
+    string
+`
+---
+`template \$string`
+---
+`template $string`
+---
+`template \`string\``
+---
+`template ${"string"}`
+---
+`template ${1 + 2}`
+---
+`template ${[]}`
