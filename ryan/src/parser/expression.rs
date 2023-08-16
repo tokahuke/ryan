@@ -52,7 +52,7 @@ lazy_static::lazy_static! {
 #[derive(Debug, Clone, PartialEq)]
 pub enum Expression {
     /// Builds a list of Ryan values.
-    List(Vec<Expression>),
+    List(List),
     /// Builds a dictionary of Ryan values.
     Dict(Dict),
     /// Based on an expressing returning a `bool`, executes either of the supplied
@@ -87,7 +87,7 @@ impl Display for Expression {
         match self {
             Self::List(list) => {
                 write!(f, "[")?;
-                crate::utils::fmt_list(f, list)?;
+                crate::utils::fmt_list(f, &list.items)?;
                 write!(f, "]")?;
             }
             Self::Dict(dict) => {
@@ -120,11 +120,7 @@ impl Expression {
         PRATT_PARSER
             .map_primary(|pair| match pair.as_rule() {
                 Rule::list => {
-                    let exprs = pair
-                        .into_inner()
-                        .map(|pair| Expression::parse(*logger_cell.borrow_mut(), pair.into_inner()))
-                        .collect::<Vec<_>>();
-                    Expression::List(exprs)
+                    Expression::List(List::parse(*logger_cell.borrow_mut(), pair.into_inner()))
                 }
                 Rule::dict => {
                     Expression::Dict(Dict::parse(*logger_cell.borrow_mut(), pair.into_inner()))
@@ -192,19 +188,8 @@ impl Expression {
         values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         match self {
-            Self::List(list) => {
-                for item in list {
-                    item.capture(state, provided, values)?;
-                }
-            }
-            Self::Dict(dict) => {
-                for item in &dict.items {
-                    item.value.capture(state, provided, values)?;
-                    if let Some(g) = &item.guard {
-                        g.capture(state, provided, values)?;
-                    }
-                }
-            }
+            Self::List(list) => list.capture(state, provided, values)?,
+            Self::Dict(dict) => dict.capture(state, provided, values)?,
             Self::Conditional(r#if, then, r#else) => {
                 r#if.capture(state, provided, values)?;
                 then.capture(state, provided, values)?;
@@ -236,25 +221,8 @@ impl Expression {
 
     pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
         let returned = match self {
-            Self::List(list) => Value::List(Rc::from(
-                list.iter()
-                    .map(|expr| expr.eval(state))
-                    .collect::<Option<Vec<_>>>()?,
-            )),
-            Self::Dict(dict) => Value::Map(Rc::new({
-                let mut evald = IndexMap::new();
-                for item in &dict.items {
-                    if let Some(g) = &item.guard {
-                        let tested = g.eval(state)?.is_true();
-                        if !state.absorb(tested)? {
-                            continue;
-                        }
-                    }
-
-                    evald.insert(rc_world::str_to_rc(&item.key), item.value.eval(state)?);
-                }
-                evald
-            })),
+            Self::List(list) => list.eval(state)?,
+            Self::Dict(dict) => dict.eval(state)?,
             Self::Conditional(r#if, then, r#else) => {
                 let if_evalued = r#if.eval(state)?;
                 let to_eval = if state.absorb(if_evalued.is_true())? {
@@ -299,11 +267,126 @@ impl Dict {
 
         Dict { items }
     }
+
+    #[must_use]
+    pub(super) fn capture(
+        &self,
+        state: &mut State<'_>,
+        provided: &mut [Rc<str>],
+        values: &mut IndexMap<Rc<str>, Value>,
+    ) -> Option<()> {
+        for item in &self.items {
+            item.capture(state, provided, values)?;
+        }
+
+        Some(())
+    }
+
+    pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
+        let mut evald = IndexMap::new();
+
+        for item in &self.items {
+            match item {
+                DictItem::KeyValue(kv) => {
+                    if let Some(g) = &kv.guard {
+                        let tested = g.eval(state)?.is_true();
+                        if !state.absorb(tested)? {
+                            continue;
+                        }
+                    }
+
+                    evald.insert(rc_world::str_to_rc(&kv.key), kv.value.eval(state)?);
+                }
+                DictItem::FlattenExpression(expr) => {
+                    let returned = expr.eval(state)?;
+                    match returned {
+                        Value::Map(map) => {
+                            for (key, value) in &*map {
+                                evald.insert(key.clone(), value.clone());
+                            }
+                        }
+                        Value::List(list) => {
+                            for item in &*list {
+                                match item {
+                                    Value::List(pair) if pair.len() == 2 => {
+                                        if let Value::Text(key) = &pair[0] {
+                                            evald.insert(key.clone(), pair[1].clone());
+                                        } else {
+                                            state.raise(format!(
+                                                "First element of key-pair list must be text, got {}",
+                                                pair[0].canonical_type()
+                                            ))?;
+                                        }
+                                    }
+                                    _ => state.raise(format!(
+                                        "Key-pair list must be [text, any], got {}",
+                                        item.canonical_type(),
+                                    ))?,
+                                }
+                            }
+                        }
+                        val => state.raise(format!(
+                            "Flatten expression must be either a map or list of key-value pairs, got {}",
+                            val.canonical_type(),
+                        ))?,
+                    }
+                }
+            }
+        }
+
+        Some(Value::Map(Rc::new(evald)))
+    }
+}
+
+///
+#[derive(Debug, Clone, PartialEq)]
+pub enum DictItem {
+    KeyValue(KeyValue),
+    FlattenExpression(Expression),
+}
+
+impl Display for DictItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            DictItem::KeyValue(kv) => write!(f, "{kv}")?,
+            DictItem::FlattenExpression(expr) => write!(f, "...{expr}")?,
+        }
+
+        Ok(())
+    }
+}
+
+impl DictItem {
+    fn parse(logger: &mut ErrorLogger, mut pairs: Pairs<'_, Rule>) -> Self {
+        let inner = pairs.next().expect("a dict item always has a token");
+        match inner.as_rule() {
+            Rule::keyValue => DictItem::KeyValue(KeyValue::parse(logger, inner.into_inner())),
+            Rule::flatExpression => {
+                DictItem::FlattenExpression(Expression::parse(logger, inner.into_inner()))
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    #[must_use]
+    pub(super) fn capture(
+        &self,
+        state: &mut State<'_>,
+        provided: &mut [Rc<str>],
+        values: &mut IndexMap<Rc<str>, Value>,
+    ) -> Option<()> {
+        match self {
+            DictItem::KeyValue(kv) => kv.capture(state, provided, values)?,
+            DictItem::FlattenExpression(expr) => expr.capture(state, provided, values)?,
+        }
+
+        Some(())
+    }
 }
 
 /// An entry of a dictionary expression.
 #[derive(Debug, Clone, PartialEq)]
-pub struct DictItem {
+pub struct KeyValue {
     /// The string value associated with the Ryan value.
     pub key: Rc<str>,
     /// The expression that evaluates to the value of this association.
@@ -313,7 +396,7 @@ pub struct DictItem {
     pub guard: Option<Expression>,
 }
 
-impl Display for DictItem {
+impl Display for KeyValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let Some(g) = &self.guard {
             write!(f, "{}: {} if {}", QuotedStr(&self.key), self.value, g)
@@ -323,7 +406,7 @@ impl Display for DictItem {
     }
 }
 
-impl DictItem {
+impl KeyValue {
     fn parse(logger: &mut ErrorLogger, pairs: Pairs<'_, Rule>) -> Self {
         let mut key = None;
         let mut value = None;
@@ -353,10 +436,133 @@ impl DictItem {
 
         let key = key.expect("there is always a key in dict item");
 
-        DictItem {
+        KeyValue {
             value: value.unwrap_or_else(|| Expression::Literal(Literal::Identifier(key.clone()))),
             key,
             guard,
+        }
+    }
+
+    #[must_use]
+    pub(super) fn capture(
+        &self,
+        state: &mut State<'_>,
+        provided: &mut [Rc<str>],
+        values: &mut IndexMap<Rc<str>, Value>,
+    ) -> Option<()> {
+        self.value.capture(state, provided, values)?;
+        if let Some(g) = &self.guard {
+            g.capture(state, provided, values)?;
+        }
+
+        Some(())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct List {
+    items: Vec<ListItem>,
+}
+
+impl List {
+    fn parse(logger: &mut ErrorLogger, pairs: Pairs<'_, Rule>) -> Self {
+        let mut items = vec![];
+
+        for pair in pairs {
+            match pair.as_rule() {
+                Rule::listItem => items.push(ListItem::parse(logger, pair.into_inner())),
+                _ => unreachable!(),
+            }
+        }
+
+        List { items }
+    }
+
+    #[must_use]
+    pub(super) fn capture(
+        &self,
+        state: &mut State<'_>,
+        provided: &mut [Rc<str>],
+        values: &mut IndexMap<Rc<str>, Value>,
+    ) -> Option<()> {
+        for item in &self.items {
+            item.capture(state, provided, values)?;
+        }
+
+        Some(())
+    }
+
+    pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
+        let mut evald = vec![];
+
+        for item in &self.items {
+            match item {
+                ListItem::Item(item) => {
+                    evald.push(item.eval(state)?);
+                }
+                ListItem::FlattenExpression(expr) => {
+                    let returned = expr.eval(state)?;
+                    match returned {
+                        Value::List(list) => evald.extend(list.iter().cloned()),
+                        Value::Map(map) => {
+                            for (key, value) in &*map {
+                                evald.push(Value::List(
+                                    vec![Value::Text(key.clone()), value.clone()].into(),
+                                ));
+                            }
+                        }
+                        val => state.raise(format!(
+                            "Flatten expression must be either a map or a list, got {}",
+                            val.canonical_type(),
+                        ))?,
+                    }
+                }
+            }
+        }
+
+        Some(Value::List(evald.into()))
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ListItem {
+    Item(Expression),
+    FlattenExpression(Expression),
+}
+
+impl Display for ListItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ListItem::Item(item) => write!(f, "{item}")?,
+            ListItem::FlattenExpression(expr) => write!(f, "...{expr}")?,
+        }
+
+        Ok(())
+    }
+}
+
+impl ListItem {
+    fn parse(logger: &mut ErrorLogger, mut pairs: Pairs<'_, Rule>) -> Self {
+        let inner = pairs.next().expect("a dict item always has a token");
+        match inner.as_rule() {
+            Rule::expression => ListItem::Item(Expression::parse(logger, inner.into_inner())),
+            Rule::flatExpression => {
+                ListItem::FlattenExpression(Expression::parse(logger, inner.into_inner()))
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    #[must_use]
+    pub(super) fn capture(
+        &self,
+        state: &mut State<'_>,
+        provided: &mut [Rc<str>],
+        values: &mut IndexMap<Rc<str>, Value>,
+    ) -> Option<()> {
+        match self {
+            ListItem::Item(item) => item.capture(state, provided, values),
+            ListItem::FlattenExpression(expr) => expr.capture(state, provided, values),
         }
     }
 }

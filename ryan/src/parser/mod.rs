@@ -26,7 +26,7 @@ pub use self::binding::Binding;
 pub use self::block::Block;
 pub use self::comprehension::ListComprehension;
 pub use self::error::{ErrorEntry, ErrorLogger, ParseError};
-pub use self::expression::{Dict, DictItem, Expression};
+pub use self::expression::{Dict, Expression, KeyValue};
 pub use self::import::{Format, Import};
 pub use self::literal::Literal;
 pub use self::operation::{
@@ -94,7 +94,10 @@ impl Rule {
             Rule::pathOp => "list or map access",
             Rule::term => "an expression term",
             Rule::list => "a list",
+            Rule::listItem => "an item of a list",
+            Rule::flatExpression => "a flatten expression",
             Rule::dictItem => "a dictionary item",
+            Rule::keyValue => "a key-value dictionary entry",
             Rule::dict => "a dictionary",
             Rule::conditional => "`if ... then ... else ...`",
             Rule::listComprehension => "a list comprehension",

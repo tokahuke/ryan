@@ -15,3 +15,15 @@
 - Get rid of serde_json: now, we have a native `Deserializer` for Ryan.
 - Quoting with snailquote is kinda... wrong: implemented correct JSON quoting.
 - Remember insertion order, just like Python dictionaries.
+
+
+# v0.2.1
+
+- Template strings: `` `like ${"this"}` ``.
+
+
+# v0.2.2
+
+- Flatten expressions for lists: `[1, 2, ...[3, 4]] = [1, 2, 3, 4]`.
+- Flatten expressions for dicts: `{a: 1, ...{b: 2, c: 3}} = {a: 1, b: 2, c: 3}`.
+- Flatten expressions from list to dict and from dict to list.

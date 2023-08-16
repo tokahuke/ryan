@@ -82,12 +82,15 @@ term = _{
     | "(" ~ expression ~ ")"
 }
     list = { "[" ~ (
-        expression ~ ("," ~ expression )* ~ ","?
+        listItem ~ ("," ~ listItem )* ~ ","?
     )? ~ "]" }
-    dictItem = { (text | identifier) ~ (":" ~ expression)? ~ ifGuard? }
+        listItem = { flatExpression | expression }
+        flatExpression = { "..." ~ expression }
     dict = { "{" ~ (
         dictItem ~ ("," ~ dictItem)* ~ ","?
     )? ~ "}" }
+        dictItem = { flatExpression | keyValue }
+        keyValue = { (text | identifier) ~ (":" ~ expression)? ~ ifGuard? }
     conditional = { "if" ~ expression ~ "then" ~ expression ~ "else" ~ expression }
 
 

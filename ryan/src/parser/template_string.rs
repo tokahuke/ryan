@@ -5,7 +5,7 @@ use pest::iterators::Pairs;
 
 use crate::rc_world;
 
-use super::{ErrorLogger, Expression, Rule, State, Value, value::TemplatedValue};
+use super::{value::TemplatedValue, ErrorLogger, Expression, Rule, State, Value};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TemplateString {

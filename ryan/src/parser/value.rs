@@ -352,7 +352,6 @@ pub struct NotIterable {
     val: Value,
 }
 
-
 pub struct TemplatedValue(pub Value);
 
 impl Display for TemplatedValue {
