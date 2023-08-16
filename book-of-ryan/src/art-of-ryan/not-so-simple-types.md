@@ -19,6 +19,13 @@ The two main operations on lists are _concatenation_ (just like with strings) an
 ```ryan
 [1, 2, 3] + ["a", "b", "c"]     // -> [1, 2, 3, "a", "b", "c"]
 ```
+Alternatively, like in some programming languages, Ryan allows you to easily compose lists using _flatten expressions_ (the `...` syntax below):
+```ryan
+let x = [4, 5, 6];
+[1, 2, 3, ...x]     // -> [1, 2, 3, 4, 5, 6]
+```
+This yields a similar effect to adding lists.
+
 Index accessing is also easy: get the n-th element in the list. However, Ryan shares a pet-peeve with many other programming languages: the _first_ position is indexed by the number zero.
 ```
 [1, 2, 3][0]        // -> 1
@@ -82,7 +89,19 @@ x + y       // -> { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6 }
 x["a"]      // -> 1
 x["d"]      // error! Key "d" missing in map
 ```
-However, following the same idea as before, if a certain key could be a _valid variable name_, one can also use the shorter `.` operator to index dictionaries:
+And you can also use flatten expressions with dictionaries, just as if you would do with a list:
+```ryan
+let x = { a: 1, b: 2, c: 3 };
+{
+    d: 4,
+    e: 5,
+    f: 6,
+    ...x
+}   // -> { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6 }
+```
+This can be useful when creating _record inheritance_ structures in Ryan.
+
+Lastly, if a certain key could be a _valid variable name_, one can also use the shorter `.` operator to index dictionaries:
 ```ryan
 let x = { a: 1, b: 2, c: 3 };
 x.a     // -> 1
