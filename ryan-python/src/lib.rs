@@ -92,5 +92,7 @@ pub fn ryan(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         ryan_to_python(py, &value)
     }
 
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
+
     Ok(())
 }
