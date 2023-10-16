@@ -22,7 +22,7 @@ pub enum Binding {
     PatternMatchDefinition {
         /// The identifier for the pattern.
         identifier: Rc<str>,
-        /// The pattern against whitch to match the input.
+        /// The pattern against which to match the input.
         pattern: Pattern,
         /// The code to be executed if the pattern is satisfied.
         block: Block,

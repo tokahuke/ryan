@@ -68,15 +68,17 @@ impl ListComprehension {
         provided: &mut [Rc<str>],
         values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
-        self.expression.capture(state, provided, values)?;
+        let mut provided = provided.to_vec();
 
         for for_clause in &self.for_clauses {
-            for_clause.capture(state, provided, values)?;
+            for_clause.capture(state, &mut provided, values)?;
         }
 
         if let Some(guard) = &self.if_guard {
-            guard.capture(state, provided, values)?;
+            guard.capture(state, &mut* provided, values)?;
         }
+
+        self.expression.capture(state, &mut* provided, values)?;
 
         Some(())
     }
@@ -227,15 +229,17 @@ impl DictComprehension {
         provided: &mut [Rc<str>],
         values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
-        self.key_value_clause.capture(state, provided, values)?;
+        let mut provided = provided.to_vec();
 
         for for_clause in &self.for_clauses {
-            for_clause.capture(state, provided, values)?;
+            for_clause.capture(state, &mut provided, values)?;
         }
 
         if let Some(guard) = &self.if_guard {
-            guard.capture(state, provided, values)?;
+            guard.capture(state, &mut* provided, values)?;
         }
+
+        self.key_value_clause.capture(state, &mut* provided, values)?;
 
         Some(())
     }
@@ -353,10 +357,14 @@ impl ForClause {
     pub(super) fn capture(
         &self,
         state: &mut State<'_>,
-        provided: &mut [Rc<str>],
+        provided: &mut Vec<Rc<str>>,
         values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
-        self.expression.capture(state, provided, values)
+        self.expression.capture(state, provided, values)?;
+        self.pattern.capture(state, provided, values)?;
+        self.pattern.provided(provided);
+
+        Some(())
     }
 }
 

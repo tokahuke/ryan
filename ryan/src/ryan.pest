@@ -46,7 +46,7 @@ binaryOp = _{
     | dividedOp | remainderOp | defaultOp | juxtapositionOp 
 }
 	orOp = { "or" }
-    andOp = { "and" } 
+    andOp = { "and" }
     equalsOp = { "==" }
     notEqualsOp = { "!=" }
     typeMatchesOp = { "#" }
@@ -64,11 +64,14 @@ binaryOp = _{
     juxtapositionOp = { "" }
 prefixOp = _{ notOp }
     notOp = { "not" }
-postfixOp = _{ accessOp }
+postfixOp = _{ accessOp | castInt | castFloat | castText }
     accessOp = { "." ~ identifier }
     pathOp = { "[" ~ (
         expression ~ ("," ~ expression )* ~ ","?
     ) ~ "]" }
+    castInt = { "as" ~ "int" }
+    castFloat = { "as" ~ "float" }
+    castText = { "as" ~ "text" }
 
 term = _{
     list

@@ -107,4 +107,16 @@
         <td><code>parse_float x: text</code></td>
         <td>Parses some text as float, e.g<code>parse_float "123"</code> = <code>123.0</code>. This raises an error if the text is not a valid float.</td>
     </tr>
+    <tr>
+        <td><code>floor x: float</code></td>
+        <td>Calculates the floor of a given number.</td>
+    </tr>
+    <tr>
+        <td><code>ceil x: float</code></td>
+        <td>Calculates the ceiling of a given number.</td>
+    </tr>
+    <tr>
+        <td><code>round x: float</code></td>
+        <td>Rounds a given number to the nearest integer.</td>
+    </tr>
 </table>

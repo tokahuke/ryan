@@ -135,6 +135,12 @@ pub enum PostfixOperator {
     Access(Rc<str>),
     /// Access the value in a deeply nested Ryan object using the supplied path.
     Path(Vec<Expression>),
+    /// Cast the value as integer.
+    CastInt,
+    /// Cast the value as float.
+    CastFloat,
+    /// Cast the value as text.
+    CastText,
 }
 
 impl Display for PostfixOperator {
@@ -145,6 +151,15 @@ impl Display for PostfixOperator {
                 write!(f, "[")?;
                 crate::utils::fmt_list(f, exprs)?;
                 write!(f, "]")?;
+            },
+            Self::CastInt => {
+                write!(f, "as int")?;
+            }
+            Self::CastFloat => {
+                write!(f, "as float")?;
+            }
+            Self::CastText => {
+                write!(f, "as text")?;
             }
         }
 
@@ -180,6 +195,15 @@ impl PostfixOperator {
                 }
 
                 PostfixOperator::Path(exprs)
+            },
+            Rule::castInt => {
+                PostfixOperator::CastInt
+            },
+            Rule::castFloat => {
+                PostfixOperator::CastFloat
+            }
+            Rule::castText => {
+                PostfixOperator::CastText
             }
             _ => unreachable!(),
         }
@@ -509,6 +533,27 @@ impl PostfixOperation {
                         return None;
                     }
                 }
+            }
+            (Value::Bool(b), PostfixOperator::CastInt) => {
+                Value::Integer(*b as i64)
+            },
+            (Value::Float(f), PostfixOperator::CastInt) => {
+                Value::Integer(*f as i64)
+            }
+            (Value::Integer(i), PostfixOperator::CastInt) => {
+                Value::Integer(*i as i64)
+            }
+            (Value::Bool(b), PostfixOperator::CastFloat) => {
+                Value::Float(*b as i64 as f64)
+            }
+            (Value::Float(f), PostfixOperator::CastFloat) => {
+                Value::Float(*f as f64)
+            }
+            (Value::Integer(i), PostfixOperator::CastFloat) => {
+                Value::Float(*i as f64)
+            }
+            (left, PostfixOperator::CastText) => {
+                Value::Text(rc_world::string_to_rc(left.to_string()))
             }
             _ => {
                 state.raise(format!(

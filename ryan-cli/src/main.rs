@@ -1,22 +1,3 @@
-// use ryan::environment::Environment;
-// use ryan::parser;
-
-// fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
-//     let file = std::env::args().into_iter().collect::<Vec<_>>()[1].clone();
-//     let ryans = std::fs::read_to_string(&file)?;
-
-//     for ryan in ryans.split("---") {
-//         let parsed = parser::parse(ryan)?;
-//         println!("> {}", parsed);
-//         match parser::eval(Environment::new(Some(&file)), &parsed) {
-//             Ok(ok) => println!("ok= {ok}",),
-//             Err(err) => println!("err= {err}",),
-//         }
-//     }
-
-//     Ok(())
-// }
-
 use std::io::Write;
 
 use clap::Parser;

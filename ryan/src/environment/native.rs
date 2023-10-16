@@ -575,6 +575,39 @@ fn build_built_ins() -> HashMap<Rc<str>, Value> {
             )) as Result<_, BuiltinErrorMsg>
         },
     ));
+    insert(NativePatternMatch::new(
+        "floor",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Float)),
+        move |value| {
+            let Value::Float(float) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Float(float.floor())) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "ceil",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Float)),
+        move |value| {
+            let Value::Float(float) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Float(float.ceil())) as Result<_, BuiltinErrorMsg>
+        },
+    ));
+    insert(NativePatternMatch::new(
+        "round",
+        Pattern::Identifier(t("x"), Some(TypeExpression::Float)),
+        move |value| {
+            let Value::Float(float) = value else {
+                unreachable!()
+            };
+
+            Ok(Value::Float(float.round())) as Result<_, BuiltinErrorMsg>
+        },
+    ));
 
     built_ins
 }

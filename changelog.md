@@ -27,3 +27,11 @@
 - Flatten expressions for lists: `[1, 2, ...[3, 4]] = [1, 2, 3, 4]`.
 - Flatten expressions for dicts: `{a: 1, ...{b: 2, c: 3}} = {a: 1, b: 2, c: 3}`.
 - Flatten expressions from list to dict and from dict to list.
+
+
+# v0.2.3
+
+- Fix list comprehensions bug inside patterns: pattern was not capturing.
+- Multi-loop comprehensions.
+- Type casting. Only `as int`, `as float` and `as text`, which will be enough for
+most cases.

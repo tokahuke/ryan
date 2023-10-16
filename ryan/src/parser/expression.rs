@@ -45,6 +45,7 @@ lazy_static::lazy_static! {
             .op(Op::infix(Rule::defaultOp, Left))
             .op(Op::infix(Rule::juxtapositionOp, Right))
             .op(Op::postfix(Rule::accessOp))
+            .op(Op::postfix(Rule::castInt) | Op::postfix(Rule::castFloat) | Op::postfix(Rule::castText))
     };
 }
 
