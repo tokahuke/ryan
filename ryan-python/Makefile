@@ -19,3 +19,13 @@ publish:
 		--interpreter 3.10 \
 		--username ${user} \
 		--password ${password} || echo "Que sera, sera! Best effort."
+	-docker run --rm -v $(shell pwd):/io ghcr.io/pyo3/maturin publish \
+		--compatibility manylinux2014 \
+		--interpreter 3.11 \
+		--username ${user} \
+		--password ${password} || echo "Que sera, sera! Best effort."
+	-docker run --rm -v $(shell pwd):/io ghcr.io/pyo3/maturin publish \
+		--compatibility manylinux2014 \
+		--interpreter 3.12 \
+		--username ${user} \
+		--password ${password} || echo "Que sera, sera! Best effort."

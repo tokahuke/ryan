@@ -283,9 +283,9 @@ dependencies = [
 
 [[package]]
 name = "ryan"
-version = "0.2.1"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c24f3403d70c37cdd0890d822a01ff29b1002b9174744a0061f95b6e8db37d8d"
+checksum = "93e345f36ac51e127f4541d85509c06c36e11c43721a9875c4a0ab5104590862"
 dependencies = [
  "indexmap",
  "lazy_static",
@@ -297,7 +297,7 @@ dependencies = [
 
 [[package]]
 name = "ryan-python"
-version = "0.2.2"
+version = "0.2.4"
 dependencies = [
  "pyo3",
  "ryan",
