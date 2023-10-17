@@ -8,7 +8,10 @@ on:
 
 jobs:
   python:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     permissions: write-all
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
