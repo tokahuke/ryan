@@ -98,8 +98,8 @@ term = _{
 
 
 // Comprehensions:
-listComprehension = { "[" ~ expression ~ (forClause) ~ ifGuard? ~ "]" }
-dictComprehension = { "{" ~ keyValueClause ~ (forClause) ~ ifGuard? ~ "}" }
+listComprehension = { "[" ~ expression ~ (forClause)+ ~ ifGuard? ~ "]" }
+dictComprehension = { "{" ~ keyValueClause ~ (forClause)+ ~ ifGuard? ~ "}" }
     forClause = { "for" ~ pattern ~ "in" ~ expression }
     ifGuard = { "if" ~ expression }
     keyValueClause = { expression ~ ":" ~ expression }

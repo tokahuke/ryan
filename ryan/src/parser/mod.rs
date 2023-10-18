@@ -14,6 +14,7 @@ mod value;
 use indexmap::IndexMap;
 use pest::Parser as _;
 use pest_derive::Parser;
+use std::cell::RefCell;
 use std::fmt::Display;
 use std::rc::Rc;
 use std::str;
@@ -186,8 +187,8 @@ impl Display for Context {
 struct State<'a> {
     inherited: Option<&'a State<'a>>,
     bindings: IndexMap<Rc<str>, Value>,
-    error: Option<String>,
-    contexts: Vec<Context>,
+    error: Rc<RefCell<Option<String>>>,
+    contexts: Rc<RefCell<Vec<Context>>>,
     environment: Environment,
 }
 
@@ -196,10 +197,10 @@ impl<'a> State<'a> {
         State {
             inherited: None,
             bindings: IndexMap::new(),
-            error: None,
-            contexts: vec![Context::RunningFile(rc_world::str_to_rc(
-                environment.current_module.as_deref().unwrap_or("<main>"),
-            ))],
+            error: Rc::default(),
+            contexts: Rc::new(RefCell::new(vec![Context::RunningFile(
+                rc_world::str_to_rc(environment.current_module.as_deref().unwrap_or("<main>")),
+            )])),
             environment,
         }
     }
@@ -211,7 +212,7 @@ impl<'a> State<'a> {
         match r {
             Ok(t) => Some(t),
             Err(e) => {
-                self.error = Some(e.to_string());
+                *self.error.borrow_mut() = Some(e.to_string());
                 None
             }
         }
@@ -221,16 +222,16 @@ impl<'a> State<'a> {
     where
         E: ToString,
     {
-        self.error = Some(msg.to_string());
+        *self.error.borrow_mut() = Some(msg.to_string());
         None
     }
 
     fn push_ctx(&mut self, ctx: Context) {
-        self.contexts.push(ctx);
+        self.contexts.borrow_mut().push(ctx);
     }
 
     fn pop_ctx(&mut self) {
-        self.contexts.pop();
+        self.contexts.borrow_mut().pop();
     }
 
     fn try_get(&self, id: &str) -> Result<Value, String> {
@@ -250,6 +251,16 @@ impl<'a> State<'a> {
 
     fn get(&mut self, id: &str) -> Option<Value> {
         self.absorb(self.try_get(id))
+    }
+
+    fn new_local(&'a self, new_bindings: IndexMap<Rc<str>, Value>) -> Self {
+        State {
+            environment: self.environment.clone(),
+            error: self.error.clone(),
+            contexts: self.contexts.clone(),
+            inherited: Some(self),
+            bindings: new_bindings,
+        }
     }
 }
 
@@ -284,8 +295,17 @@ pub fn eval(environment: Environment, block: &Block) -> Result<Value, EvalError>
         Ok(value)
     } else {
         Err(EvalError {
-            error: state.error.expect("on backtracking, an error must be set"),
-            context: state.contexts.iter().map(ToString::to_string).collect(),
+            error: state
+                .error
+                .borrow()
+                .clone()
+                .expect("on backtracking, an error must be set"),
+            context: state
+                .contexts
+                .borrow()
+                .iter()
+                .map(ToString::to_string)
+                .collect(),
         })
     }
 }

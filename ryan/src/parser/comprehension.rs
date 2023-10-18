@@ -75,93 +75,65 @@ impl ListComprehension {
         }
 
         if let Some(guard) = &self.if_guard {
-            guard.capture(state, &mut* provided, values)?;
+            guard.capture(state, &mut *provided, values)?;
         }
 
-        self.expression.capture(state, &mut* provided, values)?;
+        self.expression.capture(state, &mut *provided, values)?;
 
         Some(())
     }
 
-    /// Finicky impl: `Some(None)` is the error code; `None` skips iteration. Never
-    /// use `?` here.
-    pub(super) fn run_iter(
-        &self,
-        for_pattern: &Pattern,
-        arg: Value,
-        state: &mut State<'_>,
-    ) -> Option<Option<Value>> {
-        let mut new_bindings = IndexMap::default();
-        if for_pattern.bind(&arg, &mut new_bindings, state).is_none() {
-            return Some(None);
-        }
+    pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
+        let mut bag = vec![];
+        self.run_iter(state, &mut bag, &self.for_clauses)?;
 
-        let mut new_state = State {
-            inherited: Some(&state),
-            bindings: new_bindings,
-            error: None,
-            contexts: vec![],
-            environment: state.environment.clone(),
-        };
-
-        let outcome = if let Some(guard) = &self.if_guard {
-            guard
-                .predicate
-                .eval(&mut new_state)
-                .and_then(|if_evalued| new_state.absorb(if_evalued.is_true()))
-                .and_then(|is_true| {
-                    if is_true {
-                        if let Some(outcome) = self.expression.eval(&mut new_state) {
-                            Some(Some(outcome))
-                        } else {
-                            None
-                        }
-                    } else {
-                        Some(None)
-                    }
-                })
-        } else {
-            self.expression.eval(&mut new_state).map(Option::Some)
-        };
-
-        let maybe_error = new_state.error;
-
-        if let Some(outcome) = outcome {
-            Some(outcome)
-        } else {
-            state.contexts.extend(new_state.contexts);
-            state.error = maybe_error;
-            return None;
-        }
+        Some(Value::List(bag.into()))
     }
 
-    pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
-        if self.for_clauses.len() > 1 {
-            panic!("Multiple for-clause comprehension not yet supported");
-        }
-
-        let iterable = self.for_clauses[0].expression.eval(state)?;
-        let iterated = match iterable.iter() {
-            Ok(iter) => Value::List({
-                let mut iterated = vec![];
-
-                for item in iter {
-                    match self.run_iter(&self.for_clauses[0].pattern, item, state) {
-                        Some(Some(value)) => iterated.push(value),
-                        Some(None) => {}
-                        None => return None,
-                    }
-                }
-
-                iterated.into()
-            }),
+    fn run_iter(
+        &self,
+        state: &mut State<'_>,
+        bag: &mut Vec<Value>,
+        for_clauses: &[ForClause],
+    ) -> Option<()> {
+        let for_clause = &for_clauses[0];
+        let iterable = for_clause.expression.eval(state)?;
+        let iter = match iterable.iter() {
+            Ok(iter) => iter,
             Err(err) => {
                 state.raise(err)?;
                 return None;
             }
         };
 
-        Some(iterated)
+        if for_clauses.len() > 1 {
+            // Recurse
+            for item in iter {
+                let new_bindings = for_clause.bindings(state, &item)?;
+                let mut new_state = state.new_local(new_bindings);
+
+                self.run_iter(&mut new_state, bag, &for_clauses[1..])?;
+            }
+        } else {
+            // Loop
+            for item in iter {
+                let new_bindings = for_clause.bindings(state, &item)?;
+                let mut new_state = state.new_local(new_bindings);
+
+                if let Some(guard) = &self.if_guard {
+                    guard.maybe_eval(&mut new_state, |s| {
+                        let value = self.expression.eval(s)?;
+                        bag.push(value);
+                        Some(())
+                    })?;
+                } else {
+                    let value = self.expression.eval(&mut new_state)?;
+                    bag.push(value);
+                }
+            }
+        }
+
+        Some(())
     }
 }
 
@@ -236,95 +208,65 @@ impl DictComprehension {
         }
 
         if let Some(guard) = &self.if_guard {
-            guard.capture(state, &mut* provided, values)?;
+            guard.capture(state, &mut *provided, values)?;
         }
 
-        self.key_value_clause.capture(state, &mut* provided, values)?;
+        self.key_value_clause
+            .capture(state, &mut *provided, values)?;
 
         Some(())
     }
 
-    /// Finicky impl: `Some(None)` is the error code; `None` skips iteration. Never
-    /// use `?` here.
-    pub(super) fn run_iter(
-        &self,
-        for_pattern: &Pattern,
-        arg: Value,
-        state: &mut State<'_>,
-    ) -> Option<Option<(Rc<str>, Value)>> {
-        let mut new_bindings = IndexMap::default();
-        if for_pattern.bind(&arg, &mut new_bindings, state).is_none() {
-            return Some(None);
-        }
+    pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
+        let mut bag = IndexMap::new();
+        self.run_iter(state, &mut bag, &self.for_clauses)?;
 
-        let mut new_state = State {
-            inherited: Some(&state),
-            bindings: new_bindings,
-            error: None,
-            contexts: vec![],
-            environment: state.environment.clone(),
-        };
-
-        let outcome = if let Some(guard) = &self.if_guard {
-            guard
-                .predicate
-                .eval(&mut new_state)
-                .and_then(|if_evalued| new_state.absorb(if_evalued.is_true()))
-                .and_then(|is_true| {
-                    if is_true {
-                        if let Some(outcome) = self.key_value_clause.eval(&mut new_state) {
-                            Some(Some(outcome))
-                        } else {
-                            None
-                        }
-                    } else {
-                        Some(None)
-                    }
-                })
-        } else {
-            self.key_value_clause.eval(&mut new_state).map(Option::Some)
-        };
-
-        let maybe_error = new_state.error;
-
-        if let Some(outcome) = outcome {
-            Some(outcome)
-        } else {
-            state.contexts.extend(new_state.contexts);
-            state.error = maybe_error;
-            return None;
-        }
+        Some(Value::Map(bag.into()))
     }
 
-    pub(super) fn eval(&self, state: &mut State<'_>) -> Option<Value> {
-        if self.for_clauses.len() > 1 {
-            panic!("Multiple for-clause comprehension not yet supported");
-        }
-
-        let iterable = self.for_clauses[0].expression.eval(state)?;
-        let iterated = match iterable.iter() {
-            Ok(iter) => Value::Map({
-                let mut iterated = IndexMap::new();
-
-                for item in iter {
-                    match self.run_iter(&self.for_clauses[0].pattern, item, state) {
-                        Some(Some((key, value))) => {
-                            iterated.insert(key, value);
-                        }
-                        Some(None) => {}
-                        None => return None,
-                    }
-                }
-
-                iterated.into()
-            }),
+    fn run_iter(
+        &self,
+        state: &mut State<'_>,
+        bag: &mut IndexMap<Rc<str>, Value>,
+        for_clauses: &[ForClause],
+    ) -> Option<()> {
+        let for_clause = &for_clauses[0];
+        let iterable = for_clause.expression.eval(state)?;
+        let iter = match iterable.iter() {
+            Ok(iter) => iter,
             Err(err) => {
                 state.raise(err)?;
                 return None;
             }
         };
 
-        Some(iterated)
+        if for_clauses.len() > 1 {
+            // Recurse
+            for item in iter {
+                let new_bindings = for_clause.bindings(state, &item)?;
+                let mut new_state = state.new_local(new_bindings);
+                self.run_iter(&mut new_state, bag, &for_clauses[1..])?;
+            }
+        } else {
+            // Loop
+            for item in iter {
+                let new_bindings = for_clause.bindings(state, &item)?;
+                let mut new_state = state.new_local(new_bindings);
+
+                if let Some(guard) = &self.if_guard {
+                    guard.maybe_eval(&mut new_state, |s| {
+                        let (key, value) = self.key_value_clause.eval(s)?;
+                        bag.insert(key, value);
+                        Some(())
+                    })?;
+                } else {
+                    let (key, value) = self.key_value_clause.eval(&mut new_state)?;
+                    bag.insert(key, value);
+                }
+            }
+        }
+
+        Some(())
     }
 }
 
@@ -365,6 +307,14 @@ impl ForClause {
         self.pattern.provided(provided);
 
         Some(())
+    }
+
+    fn bindings(&self, state: &mut State<'_>, value: &Value) -> Option<IndexMap<Rc<str>, Value>> {
+        let mut new_bindings = IndexMap::new();
+        let bind = self.pattern.bind(&value, &mut new_bindings, state)?;
+        state.absorb(bind)?;
+
+        Some(new_bindings)
     }
 }
 
@@ -449,5 +399,17 @@ impl IfGuard {
         values: &mut IndexMap<Rc<str>, Value>,
     ) -> Option<()> {
         self.predicate.capture(state, provided, values)
+    }
+
+    fn maybe_eval<F>(&self, state: &mut State<'_>, f: F) -> Option<()>
+    where
+        F: FnOnce(&mut State<'_>) -> Option<()>,
+    {
+        let truthiness = self.predicate.eval(state)?.is_true();
+        if state.absorb(truthiness)? {
+            f(state)?;
+        }
+
+        Some(())
     }
 }

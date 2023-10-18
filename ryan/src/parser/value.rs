@@ -46,7 +46,7 @@ impl PatternMatch {
     pub(super) fn r#match(
         &self,
         arg: &Value,
-        state: &mut State<'_>,
+        state: &mut State,
     ) -> Option<Result<Value, BindError>> {
         let mut new_bindings = self.captures.clone();
 
@@ -54,24 +54,10 @@ impl PatternMatch {
             return Some(Err(err));
         }
 
-        let mut new_state = State {
-            inherited: Some(&state),
-            bindings: new_bindings,
-            error: None,
-            contexts: vec![],
-            environment: state.environment.clone(),
-        };
+        let mut new_state = state.new_local(new_bindings);
+        let outcome = self.block.eval(&mut new_state)?;
 
-        let outcome = self.block.eval(&mut new_state);
-        let maybe_error = new_state.error;
-
-        if let Some(outcome) = outcome {
-            Some(Ok(outcome))
-        } else {
-            state.contexts.extend(new_state.contexts);
-            state.error = maybe_error;
-            return None;
-        }
+        Some(Ok(outcome))
     }
 }
 
